@@ -1,0 +1,117 @@
+<script>
+	import { gsap } from "gsap";
+	import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+	gsap.registerPlugin(ScrollTrigger);
+
+	// Initial Load Animations (Hero)
+	const tl = gsap.timeline();
+
+	tl.from(".hero-text h1", {
+		y: 50,
+		opacity: 0,
+		duration: 1,
+		ease: "power3.out",
+	})
+		.from(
+			".hero-text p",
+			{
+				y: 30,
+				opacity: 0,
+				duration: 0.8,
+				ease: "power3.out",
+			},
+			"-=0.6",
+		)
+		.from(
+			".hero-actions",
+			{
+				y: 20,
+				opacity: 0,
+				duration: 0.8,
+				ease: "power3.out",
+			},
+			"-=0.6",
+		);
+
+	// Scroll Animations
+
+	// Problem Section
+	gsap.from(".problem-header", {
+		scrollTrigger: {
+			trigger: ".problem-section",
+			start: "top 80%",
+		},
+		y: 50,
+		opacity: 0,
+		duration: 1,
+		ease: "power3.out",
+	});
+
+	// Problem Section Stats - Use batch for reliability
+	ScrollTrigger.batch(".stat-item", {
+		onEnter: (batch) =>
+			gsap.to(batch, {
+				opacity: 1,
+				y: 0,
+				stagger: 0.2,
+				duration: 0.8,
+				ease: "power3.out",
+				overwrite: true,
+			}),
+		start: "top 85%",
+	});
+
+	// Set initial state for stat items
+	gsap.set(".stat-item", { opacity: 0, y: 50 });
+
+	// Solutions Cards - Improved Trigger
+	// Use batch to ensure they animate even if already in view on load
+	ScrollTrigger.batch(".cards-grid .card", {
+		onEnter: (batch) =>
+			gsap.to(batch, {
+				opacity: 1,
+				y: 0,
+				stagger: 0.15,
+				overwrite: true,
+			}),
+		start: "top 85%",
+	});
+
+	// Set initial state for batch
+	gsap.set(".cards-grid .card", { opacity: 0, y: 60 });
+
+	// Process Steps
+	gsap.from(".step", {
+		scrollTrigger: {
+			trigger: ".steps-container",
+			start: "top 80%",
+		},
+		x: -50,
+		opacity: 0,
+		stagger: 0.3,
+		duration: 1,
+		ease: "power3.out",
+	});
+
+	// Methodology Highlighting
+	const steps = document.querySelectorAll(".step");
+
+	const observer = new IntersectionObserver(
+		(entries) => {
+			entries.forEach((entry) => {
+				if (entry.isIntersecting) {
+					entry.target.classList.add("active");
+				} else {
+					entry.target.classList.remove("active");
+				}
+			});
+		},
+		{
+			threshold: 0.6,
+			rootMargin: "-10% 0px -10% 0px",
+		},
+	);
+
+	steps.forEach((step) => observer.observe(step));
+</script>

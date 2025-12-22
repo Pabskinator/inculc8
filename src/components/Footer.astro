@@ -1,0 +1,111 @@
+---
+const currentYear = new Date().getFullYear();
+---
+
+<footer>
+	<div class="container footer-content">
+		<div class="footer-col">
+			<div class="logo">INCULC8</div>
+			<p>Automating the future of business.</p>
+		</div>
+
+		<div class="footer-col">
+			<h4>Services</h4>
+			<ul>
+				<li><a href="#">Automation</a></li>
+				<li><a href="#">Funnels</a></li>
+				<li><a href="#">Consulting</a></li>
+			</ul>
+		</div>
+
+		<div class="footer-col">
+			<h4>Company</h4>
+			<ul>
+				<li><a href="#">About</a></li>
+				<li><a href="#">Contact</a></li>
+				<li><a href="#">Privacy</a></li>
+			</ul>
+		</div>
+
+		<div class="footer-col">
+			<h4>Connect</h4>
+			<div class="socials">
+				<a href="#">Twitter</a>
+				<a href="#">LinkedIn</a>
+			</div>
+		</div>
+	</div>
+
+	<div class="container footer-bottom">
+		<p>&copy; {currentYear} Inculc8 Solutions. All rights reserved.</p>
+	</div>
+</footer>
+
+<style>
+	footer {
+		background: var(--bg-dark);
+		border-top: 1px solid rgba(255, 255, 255, 0.05);
+		padding: 5rem 0 2rem;
+		color: var(--text-muted);
+		font-size: 0.9rem;
+	}
+
+	.footer-content {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+		gap: 3rem;
+		margin-bottom: 4rem;
+	}
+
+	.logo {
+		display: flex;
+		align-items: center;
+		color: var(--text-primary);
+		font-weight: 800;
+		font-size: 1.25rem;
+		margin-bottom: 1rem;
+		letter-spacing: 0.1em;
+	}
+
+	.logo::before {
+		content: "I8";
+		font-size: 0.9rem;
+		border: 1px solid var(--accent-cyan);
+		padding: 0.1rem 0.3rem;
+		border-radius: 4px;
+		color: var(--accent-cyan);
+		margin-right: 0.8rem;
+		font-family: inherit;
+		font-weight: 800;
+	}
+
+	h4 {
+		color: var(--text-primary);
+		margin-bottom: 1.5rem;
+		font-size: 0.9rem;
+		text-transform: uppercase;
+		letter-spacing: 0.1em;
+	}
+
+	ul {
+		list-style: none;
+	}
+
+	li {
+		margin-bottom: 1rem;
+	}
+
+	a {
+		transition: color 0.3s ease;
+	}
+
+	a:hover {
+		color: var(--accent-cyan);
+	}
+
+	.footer-bottom {
+		text-align: center;
+		padding-top: 2rem;
+		border-top: 1px solid var(--glass-border);
+	}
+</style>

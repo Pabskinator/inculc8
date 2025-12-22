@@ -1,0 +1,170 @@
+---
+
+---
+
+<section class="section-padding problem-section">
+	<div class="container">
+		<div class="problem-header">
+			<span class="subtext">The Challenge</span>
+			<h2>
+				Is Your Business <span class="highlight">Leaking Revenue?</span>
+			</h2>
+			<p class="lead">
+				Manual workflows and disconnected systems create friction.
+				Without automation, you're losing hours to repetitive tasks and
+				leads to poor follow-up.
+			</p>
+		</div>
+
+		<div class="stats-grid">
+			<div class="stat-item">
+				<div
+					class="stat-number"
+					data-number="20h+"
+					data-animation="shuffle"
+					data-delay="0"
+				>
+					20h+
+				</div>
+				<div class="stat-label">Wasted Weekly on Admin</div>
+			</div>
+			<div class="stat-item">
+				<div
+					class="stat-number"
+					data-number="60%"
+					data-animation="countup"
+					data-delay="200"
+				>
+					60%
+				</div>
+				<div class="stat-label">Leads Lost without Follow-up</div>
+			</div>
+			<div class="stat-item">
+				<div
+					class="stat-number"
+					data-number="$$$"
+					data-animation="shuffle"
+					data-delay="400"
+				>
+					$$$
+				</div>
+				<div class="stat-label">High Customer Acquisition Cost</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<style>
+	.problem-section {
+		padding: var(--section-spacing) 0;
+		background: var(--bg-dark);
+		position: relative;
+	}
+
+	.problem-header {
+		text-align: center;
+		max-width: 800px;
+		margin: 0 auto 5rem;
+	}
+
+	.subtext {
+		text-transform: uppercase;
+		letter-spacing: 0.2em;
+		font-size: 0.75rem;
+		font-weight: 700;
+		color: var(--accent-cyan);
+		display: block;
+		margin-bottom: 1rem;
+	}
+
+	h2 {
+		margin-bottom: 1.5rem;
+		font-weight: 800;
+		letter-spacing: -0.02em;
+	}
+
+	.highlight {
+		color: var(--accent-cyan);
+		text-shadow: 0 0 20px var(--accent-cyan-glow);
+	}
+
+	.lead {
+		font-size: 1.125rem;
+		color: var(--text-secondary);
+		line-height: 1.8;
+	}
+
+	.stats-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+		gap: 2.5rem;
+		text-align: center;
+	}
+
+	.stat-item {
+		padding: 3rem 2rem;
+		border: 2px solid var(--glass-border);
+		border-radius: 16px;
+		background: var(--bg-card);
+		transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+		backdrop-filter: blur(10px);
+		position: relative;
+		overflow: hidden;
+	}
+
+	/* Unique pulsing glow effect for Challenge section */
+	.stat-item::before {
+		content: "";
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		width: 0;
+		height: 0;
+		background: radial-gradient(
+			circle,
+			rgba(0, 240, 255, 0.2) 0%,
+			rgba(191, 148, 255, 0.1) 50%,
+			transparent 70%
+		);
+		transform: translate(-50%, -50%);
+		opacity: 0;
+		transition: all 0.6s ease;
+		z-index: 0;
+	}
+
+	.stat-item:hover::before {
+		width: 300px;
+		height: 300px;
+		opacity: 1;
+	}
+
+	.stat-item:hover {
+		transform: translateY(-12px) scale(1.02);
+		border-color: var(--accent-cyan);
+		box-shadow:
+			0 25px 50px rgba(0, 240, 255, 0.25),
+			0 10px 30px rgba(191, 148, 255, 0.2),
+			0 0 0 1px rgba(0, 240, 255, 0.5);
+	}
+
+	.stat-number {
+		font-size: 4rem;
+		font-weight: 800;
+		background: var(--gradient-tech);
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
+		margin-bottom: 0.75rem;
+		letter-spacing: -0.05em;
+		transition: all 0.3s ease;
+		position: relative;
+		z-index: 1;
+	}
+
+	.stat-label {
+		color: var(--text-muted);
+		text-transform: uppercase;
+		font-size: 0.8rem;
+		letter-spacing: 0.1em;
+		font-weight: 600;
+	}
+</style>

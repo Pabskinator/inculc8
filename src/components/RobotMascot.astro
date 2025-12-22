@@ -1,0 +1,186 @@
+<div id="robot-background"></div>
+
+<script>
+	import * as THREE from "three";
+	import { FBXLoader } from "three/addons/loaders/FBXLoader.js";
+	import { gsap } from "gsap";
+
+	const container = document.getElementById("robot-background");
+
+	if (container) {
+		const scene = new THREE.Scene();
+
+		const camera = new THREE.PerspectiveCamera(
+			50,
+			window.innerWidth / window.innerHeight,
+			0.1,
+			1000,
+		);
+		camera.position.set(0, 0, 8);
+
+		const renderer = new THREE.WebGLRenderer({
+			alpha: true,
+			antialias: true,
+		});
+		renderer.setSize(window.innerWidth, window.innerHeight);
+		renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+		container.appendChild(renderer.domElement);
+
+		// Mouse tracking
+		const mouse = { x: 0, y: 0 };
+		const targetRotation = { x: 0, y: 0 };
+		const currentRotation = { x: 0, y: 0 };
+
+		window.addEventListener("mousemove", (event) => {
+			mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+			mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+			targetRotation.y = mouse.x * 0.5;
+			targetRotation.x = mouse.y * 0.3;
+		});
+
+		// Lighting
+		const ambientLight = new THREE.AmbientLight(0xffffff, 1.5);
+		scene.add(ambientLight);
+
+		const keyLight = new THREE.DirectionalLight(0x00f0ff, 3);
+		keyLight.position.set(5, 5, 5);
+		scene.add(keyLight);
+
+		const fillLight = new THREE.DirectionalLight(0xbf94ff, 2);
+		fillLight.position.set(-5, 3, -5);
+		scene.add(fillLight);
+
+		const rimLight = new THREE.DirectionalLight(0x00f0ff, 2);
+		rimLight.position.set(0, -5, -5);
+		scene.add(rimLight);
+
+		// Load FBX
+		const loader = new FBXLoader();
+		let robot: THREE.Group | null = null;
+		let headBone: THREE.Bone | null = null;
+		let neckBone: THREE.Bone | null = null;
+		let mixer: THREE.AnimationMixer | null = null;
+
+		loader.load(
+			"/happy_robot_mascot.fbx",
+			(fbx) => {
+				robot = fbx;
+				scene.add(robot);
+
+				const box = new THREE.Box3().setFromObject(robot);
+				const center = box.getCenter(new THREE.Vector3());
+				const size = box.getSize(new THREE.Vector3());
+
+				robot.position.sub(center);
+
+				const maxDim = Math.max(size.x, size.y, size.z);
+				const scale = 3.5 / maxDim;
+				robot.scale.setScalar(scale);
+
+				robot.position.x = 3;
+				robot.position.y = -1.5;
+				robot.position.z = -2;
+
+				// Try different rotations to face forward
+				robot.rotation.y = -Math.PI / 2; // -90 degrees
+
+				console.log("� All bones:");
+
+				// Find head and neck bones
+				robot.traverse((child) => {
+					if (child instanceof THREE.Bone) {
+						console.log("  Bone:", child.name);
+						const name = child.name.toLowerCase();
+
+						if (name.includes("head")) {
+							headBone = child;
+							console.log("✅ HEAD:", child.name);
+						}
+						if (name.includes("neck")) {
+							neckBone = child;
+							console.log("✅ NECK:", child.name);
+						}
+					}
+				});
+
+				// Use neck if no head found
+				if (!headBone && neckBone) {
+					headBone = neckBone;
+					console.log("Using neck as head");
+				}
+
+				if (!headBone) {
+					console.warn("⚠️ No head/neck bone found");
+				}
+
+				// Animations
+				if (fbx.animations && fbx.animations.length > 0) {
+					mixer = new THREE.AnimationMixer(robot);
+					fbx.animations.forEach((clip) => {
+						mixer!.clipAction(clip).play();
+					});
+				}
+
+				// Floating
+				gsap.to(robot.position, {
+					y: robot.position.y + 0.15,
+					duration: 3,
+					repeat: -1,
+					yoyo: true,
+					ease: "sine.inOut",
+				});
+			},
+			undefined,
+			(error) => console.error("❌ Error:", error),
+		);
+
+		// Animation loop
+		const clock = new THREE.Clock();
+
+		function animate() {
+			requestAnimationFrame(animate);
+
+			const delta = clock.getDelta();
+			if (mixer) mixer.update(delta);
+
+			// Head tracking
+			if (headBone) {
+				currentRotation.x +=
+					(targetRotation.x - currentRotation.x) * 0.1;
+				currentRotation.y +=
+					(targetRotation.y - currentRotation.y) * 0.1;
+
+				headBone.rotation.x = currentRotation.x;
+				headBone.rotation.y = currentRotation.y;
+			}
+
+			renderer.render(scene, camera);
+		}
+
+		animate();
+
+		window.addEventListener("resize", () => {
+			camera.aspect = window.innerWidth / window.innerHeight;
+			camera.updateProjectionMatrix();
+			renderer.setSize(window.innerWidth, window.innerHeight);
+		});
+	}
+</script>
+
+<style>
+	#robot-background {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100vw;
+		height: 100vh;
+		z-index: -1;
+		pointer-events: none;
+		background: linear-gradient(180deg, #040712 0%, #0a0f1e 100%);
+	}
+
+	#robot-background canvas {
+		display: block;
+	}
+</style>

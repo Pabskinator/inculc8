@@ -1,0 +1,37 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Navigation from "../components/Navigation.astro";
+import Hero from "../components/Hero.astro";
+import ProblemSection from "../components/ProblemSection.astro";
+import SolutionsSection from "../components/SolutionsSection.astro";
+import ProcessSection from "../components/ProcessSection.astro";
+import CredibilitySection from "../components/CredibilitySection.astro";
+import ContactSection from "../components/ContactSection.astro";
+import Footer from "../components/Footer.astro";
+import LoadingScreen from "../components/LoadingScreen.astro";
+import ThreeBackground from "../components/ThreeBackground.astro";
+import ScrollAnimations from "../components/ScrollAnimations.astro";
+import NumberAnimations from "../components/NumberAnimations.astro";
+import ScrollToTop from "../components/ScrollToTop.astro";
+---
+
+<Layout title="Inculc8 Solutions | AI Automation & Funnels">
+	<LoadingScreen slot="loader" />
+	<ThreeBackground />
+	<Navigation />
+
+	<main>
+		<Hero />
+		<ProblemSection />
+		<SolutionsSection />
+		<ProcessSection />
+		<CredibilitySection />
+		<ContactSection />
+	</main>
+
+	<Footer />
+
+	<ScrollAnimations />
+	<NumberAnimations />
+	<ScrollToTop />
+</Layout>

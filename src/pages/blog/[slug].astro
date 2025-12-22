@@ -1,0 +1,462 @@
+---
+export async function getStaticPaths() {
+	// Placeholder data - will be replaced with Strapi API
+	const mockPosts = [
+		{
+			id: 1,
+			title: "How AI Automation Transformed Our Client's Sales Process",
+			slug: "ai-automation-sales-process",
+			excerpt:
+				"Discover how we helped a B2B company automate their entire sales funnel, resulting in a 3.5x ROI and 60% time savings.",
+			content: `
+# How AI Automation Transformed Our Client's Sales Process
+
+When TechStart Innovations approached us, they were struggling with a common problem: their sales team was spending 20+ hours per week on manual lead qualification and follow-ups.
+
+## The Challenge
+
+- **Manual lead scoring** taking 2-3 hours daily
+- **60% of leads** going cold due to slow follow-up
+- **Sales team burnout** from repetitive tasks
+- **Inconsistent messaging** across the funnel
+
+## Our Solution
+
+We implemented a comprehensive AI automation system that:
+
+1. **Automated Lead Qualification**
+   - AI agent analyzes incoming leads in real-time
+   - Scores based on 15+ data points
+   - Routes hot leads to sales immediately
+
+2. **Intelligent Follow-Up System**
+   - Personalized email sequences
+   - SMS reminders for high-value prospects
+   - Automatic meeting scheduling
+
+3. **CRM Integration**
+   - Seamless data sync with Salesforce
+   - Real-time dashboards
+   - Automated reporting
+
+## The Results
+
+After 90 days of implementation:
+
+- **3.5x ROI** on automation investment
+- **60% time savings** for sales team
+- **85% lead response rate** (up from 40%)
+- **2x conversion rate** improvement
+
+## Key Takeaways
+
+The success of this project came down to three factors:
+
+1. **Starting small** - We automated one process at a time
+2. **Team buy-in** - Sales team was involved from day one
+3. **Continuous optimization** - We refined the system based on real data
+
+Ready to transform your sales process? [Book a consultation](/contact) to learn how we can help.
+			`,
+			image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1200",
+			author: "Inculc8 Team",
+			publishedDate: "2025-01-15",
+			category: "Case Studies",
+			tags: ["AI", "Automation", "Sales"],
+		},
+		{
+			id: 2,
+			title: "5 Signs Your Business Needs Workflow Automation",
+			slug: "signs-business-needs-automation",
+			excerpt:
+				"Are you wasting hours on repetitive tasks? Here are the telltale signs that it's time to automate your workflows.",
+			content: `
+# 5 Signs Your Business Needs Workflow Automation
+
+Is your team drowning in repetitive tasks? Here are the clear indicators that it's time to embrace automation.
+
+## 1. Your Team Spends Hours on Manual Data Entry
+
+If your employees are copying data between systems, you're wasting valuable time and introducing errors.
+
+**Solution:** Automated data sync between platforms
+
+## 2. Lead Response Time is Slow
+
+Studies show that responding to leads within 5 minutes increases conversion by 400%.
+
+**Solution:** AI-powered instant lead qualification and routing
+
+## 3. You're Missing Follow-Up Opportunities
+
+60% of leads require 5+ follow-ups, but most sales teams give up after 2.
+
+**Solution:** Automated email sequences and reminders
+
+## 4. Reporting Takes Days Instead of Minutes
+
+If you're manually compiling reports, you're making decisions on outdated data.
+
+**Solution:** Real-time automated dashboards
+
+## 5. Customer Onboarding is Inconsistent
+
+Every new customer should have the same excellent experience.
+
+**Solution:** Automated onboarding workflows
+
+## Ready to Automate?
+
+Don't let manual processes hold your business back. [Contact us](/contact) to discover which workflows you should automate first.
+			`,
+			image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200",
+			author: "Inculc8 Team",
+			publishedDate: "2025-01-10",
+			category: "Guides",
+			tags: ["Automation", "Productivity", "Business"],
+		},
+		{
+			id: 3,
+			title: "Building High-Converting Funnels with AI Agents",
+			slug: "high-converting-funnels-ai",
+			excerpt:
+				"Learn how AI-powered agents can qualify leads, nurture prospects, and close deals while you sleep.",
+			content: `
+# Building High-Converting Funnels with AI Agents
+
+AI agents are revolutionizing how businesses build and optimize their sales funnels. Here's how to leverage them for maximum conversions.
+
+## What Are AI Agents?
+
+AI agents are intelligent software programs that can:
+- Engage with prospects 24/7
+- Qualify leads based on behavior
+- Personalize messaging at scale
+- Make data-driven decisions
+
+## The Modern Funnel Architecture
+
+### Stage 1: Awareness
+- AI chatbot on website
+- Instant engagement
+- Collect initial data
+
+### Stage 2: Interest
+- Personalized content delivery
+- Behavioral tracking
+- Lead scoring
+
+### Stage 3: Decision
+- Automated demos
+- Personalized proposals
+- Meeting scheduling
+
+### Stage 4: Action
+- Smart follow-ups
+- Objection handling
+- Deal closing
+
+## Implementation Best Practices
+
+1. **Start with one stage** - Don't try to automate everything at once
+2. **Test extensively** - A/B test every element
+3. **Monitor closely** - Watch for drop-off points
+4. **Iterate quickly** - Improve based on data
+
+## Real Results
+
+Our clients see:
+- **40% increase** in qualified leads
+- **3x faster** sales cycles
+- **24/7 availability** without hiring
+- **Consistent messaging** across all touchpoints
+
+Ready to build your AI-powered funnel? [Let's talk](/contact).
+			`,
+			image: "https://images.unsplash.com/photo-1557804506-669a67965ba0?w=1200",
+			author: "Inculc8 Team",
+			publishedDate: "2025-01-05",
+			category: "Tutorials",
+			tags: ["AI", "Funnels", "Lead Generation"],
+		},
+	];
+
+	// TODO: Replace with Strapi API call
+	// const response = await fetch('https://cms.inculc8.com/api/articles?populate=*');
+	// const { data } = await response.json();
+
+	return mockPosts.map((post) => ({
+		params: { slug: post.slug },
+		props: { post },
+	}));
+}
+
+const { post } = Astro.props;
+
+// Format date
+const date = new Date(post.publishedDate);
+const formattedDate = date.toLocaleDateString("en-US", {
+	year: "numeric",
+	month: "long",
+	day: "numeric",
+});
+
+import Layout from "../../layouts/Layout.astro";
+import Navigation from "../../components/Navigation.astro";
+import Footer from "../../components/Footer.astro";
+---
+
+<Layout title={`${post.title} | Inculc8 Blog`}>
+	<Navigation />
+
+	<main class="blog-post">
+		<article class="post-container">
+			<header class="post-header">
+				<div class="container">
+					<span class="category-badge">{post.category}</span>
+					<h1 class="post-title">{post.title}</h1>
+					<div class="post-meta">
+						<span class="author">{post.author}</span>
+						<span class="separator">•</span>
+						<time datetime={post.publishedDate}
+							>{formattedDate}</time
+						>
+					</div>
+					<div class="post-tags">
+						{post.tags.map((tag) => <span class="tag">{tag}</span>)}
+					</div>
+				</div>
+			</header>
+
+			<div class="post-image">
+				<img
+					src={post.image}
+					alt={post.title}
+				/>
+			</div>
+
+			<div class="post-content">
+				<div class="container">
+					<div
+						class="content-wrapper"
+						set:html={post.content}
+					/>
+				</div>
+			</div>
+
+			<footer class="post-footer">
+				<div class="container">
+					<a
+						href="/blog"
+						class="back-link"
+					>
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							width="20"
+							height="20"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="2"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+						>
+							<line
+								x1="19"
+								y1="12"
+								x2="5"
+								y2="12"
+							></line>
+							<polyline points="12 19 5 12 12 5"></polyline>
+						</svg>
+						Back to Blog
+					</a>
+				</div>
+			</footer>
+		</article>
+	</main>
+
+	<Footer />
+</Layout>
+
+<style>
+	.blog-post {
+		padding-top: 80px;
+		min-height: 100vh;
+	}
+
+	.post-header {
+		padding: 4rem 0 2rem;
+		text-align: center;
+	}
+
+	.category-badge {
+		display: inline-block;
+		background: var(--accent-cyan);
+		color: var(--bg-dark);
+		padding: 0.5rem 1rem;
+		border-radius: 20px;
+		font-size: 0.75rem;
+		font-weight: 700;
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+		margin-bottom: 1.5rem;
+	}
+
+	.post-title {
+		font-size: 3rem;
+		font-weight: 800;
+		margin-bottom: 1.5rem;
+		line-height: 1.2;
+		max-width: 900px;
+		margin-left: auto;
+		margin-right: auto;
+	}
+
+	.post-meta {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.75rem;
+		font-size: 1rem;
+		color: var(--text-secondary);
+		margin-bottom: 1.5rem;
+	}
+
+	.separator {
+		opacity: 0.5;
+	}
+
+	.post-tags {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		gap: 0.75rem;
+	}
+
+	.tag {
+		padding: 0.5rem 1rem;
+		background: rgba(0, 240, 255, 0.1);
+		border: 1px solid rgba(0, 240, 255, 0.2);
+		border-radius: 16px;
+		font-size: 0.875rem;
+		color: var(--accent-cyan);
+		font-weight: 600;
+	}
+
+	.post-image {
+		max-width: 1200px;
+		margin: 0 auto 4rem;
+		border-radius: 16px;
+		overflow: hidden;
+	}
+
+	.post-image img {
+		width: 100%;
+		height: auto;
+		display: block;
+	}
+
+	.post-content {
+		padding: 0 0 4rem;
+	}
+
+	.content-wrapper {
+		max-width: 800px;
+		margin: 0 auto;
+		font-size: 1.125rem;
+		line-height: 1.8;
+		color: var(--text-secondary);
+	}
+
+	.content-wrapper :global(h1),
+	.content-wrapper :global(h2),
+	.content-wrapper :global(h3) {
+		color: var(--text-primary);
+		font-weight: 700;
+		margin-top: 2.5rem;
+		margin-bottom: 1rem;
+		line-height: 1.3;
+	}
+
+	.content-wrapper :global(h1) {
+		font-size: 2.5rem;
+	}
+
+	.content-wrapper :global(h2) {
+		font-size: 2rem;
+		background: var(--gradient-tech);
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
+	}
+
+	.content-wrapper :global(h3) {
+		font-size: 1.5rem;
+	}
+
+	.content-wrapper :global(p) {
+		margin-bottom: 1.5rem;
+	}
+
+	.content-wrapper :global(ul),
+	.content-wrapper :global(ol) {
+		margin-bottom: 1.5rem;
+		padding-left: 2rem;
+	}
+
+	.content-wrapper :global(li) {
+		margin-bottom: 0.75rem;
+	}
+
+	.content-wrapper :global(strong) {
+		color: var(--text-primary);
+		font-weight: 700;
+	}
+
+	.content-wrapper :global(a) {
+		color: var(--accent-cyan);
+		text-decoration: underline;
+		transition: color 0.3s ease;
+	}
+
+	.content-wrapper :global(a:hover) {
+		color: var(--accent-violet);
+	}
+
+	.post-footer {
+		padding: 2rem 0 4rem;
+		border-top: 1px solid var(--glass-border);
+	}
+
+	.back-link {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		color: var(--accent-cyan);
+		font-weight: 600;
+		text-decoration: none;
+		transition: gap 0.3s ease;
+	}
+
+	.back-link:hover {
+		gap: 1rem;
+	}
+
+	@media (max-width: 768px) {
+		.post-title {
+			font-size: 2rem;
+		}
+
+		.content-wrapper {
+			font-size: 1rem;
+		}
+
+		.content-wrapper :global(h1) {
+			font-size: 2rem;
+		}
+
+		.content-wrapper :global(h2) {
+			font-size: 1.5rem;
+		}
+	}
+</style>

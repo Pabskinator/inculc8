@@ -1,0 +1,160 @@
+---
+
+---
+
+<header class="hero">
+	<!-- Background is now handled globally in index.astro -->
+
+	<div class="container hero-content">
+		<div class="hero-text">
+			<div class="badge">Inculc8 Solutions</div>
+			<h1 class="hero-title">
+				AI-Powered <br />
+				<span class="text-gradient">Automation</span> & <br />
+				Funnel Systems
+			</h1>
+			<p class="hero-subtitle">
+				Business Solutions SaaS. We build high-converting funnel
+				websites, optimizing workflows for B2B & B2C companies.
+			</p>
+
+			<div class="hero-actions">
+				<a
+					href="#consultation"
+					class="btn btn-primary"
+					>Book Consultation</a
+				>
+				<a
+					href="#explore"
+					class="btn btn-secondary"
+					>Explore Services</a
+				>
+			</div>
+		</div>
+
+		<!-- The visual is handled by the background component visually, 
+             but we can add a placeholder or semantic img here if needed for accessibility 
+             or if the design splits screen. 
+             Based on image 1, it looks like text left, visual right/center. -->
+	</div>
+</header>
+
+<style>
+	.hero {
+		position: relative;
+		min-height: 100vh;
+		display: flex;
+		align-items: center;
+		padding-top: 80px; /* Space for fixed nav */
+		overflow: hidden;
+	}
+
+	.hero-bg {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		z-index: 0;
+		opacity: 0.6; /* Slight dim to ensure text readability */
+	}
+
+	.hero-content {
+		position: relative;
+		z-index: 1;
+		display: grid;
+		grid-template-columns: 1fr;
+		/* Ideally 1fr 1fr if visual is on right, but if visual is bg, centered or left align text. 
+           Image shows text on left. */
+		max-width: var(--spacing-container);
+	}
+
+	@media (min-width: 900px) {
+		.hero-content {
+			grid-template-columns: 60% 40%;
+		}
+	}
+
+	.hero-text {
+		padding-right: 2rem;
+	}
+
+	.badge {
+		display: inline-block;
+		padding: 0.5rem 1rem;
+		border: 1px solid rgba(255, 255, 255, 0.1);
+		border-radius: 50px;
+		font-size: 0.85rem;
+		color: var(--text-secondary);
+		margin-bottom: 2rem;
+		backdrop-filter: blur(10px);
+	}
+
+	.hero-title {
+		font-weight: 700;
+		margin-bottom: 1.5rem;
+		line-height: 1.1;
+	}
+
+	.text-gradient {
+		background: var(--gradient-tech);
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
+		font-weight: 800;
+	}
+
+	.hero-subtitle {
+		font-size: 1.125rem;
+		color: var(--text-muted);
+		max-width: 500px;
+		margin-bottom: 3rem;
+		line-height: 1.7;
+	}
+
+	.hero-actions {
+		display: flex;
+		gap: 1.5rem;
+	}
+
+	.btn {
+		padding: 1rem 2.5rem;
+		border-radius: 8px; /* Sharper, more technical corners */
+		font-weight: 600;
+		transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+		text-align: center;
+		letter-spacing: 0.05em;
+		text-transform: uppercase;
+		font-size: 0.85rem;
+	}
+
+	.btn-primary {
+		background: var(--accent-cyan);
+		color: var(--bg-dark);
+		border: none;
+	}
+
+	.btn-primary:hover {
+		transform: translateY(-3px);
+		box-shadow: 0 10px 30px var(--accent-cyan-glow);
+		filter: brightness(1.1);
+	}
+
+	.btn-secondary {
+		background: transparent;
+		color: var(--accent-violet);
+		border: 1px solid var(--accent-violet);
+	}
+
+	.btn-secondary:hover {
+		background: var(--accent-violet);
+		color: var(--bg-dark);
+		box-shadow: 0 0 20px var(--accent-violet-glow);
+		transform: translateY(-3px);
+	}
+
+	@media (max-width: 600px) {
+		.hero-actions {
+			flex-direction: column;
+		}
+	}
+</style>

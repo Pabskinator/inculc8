@@ -1,0 +1,124 @@
+---
+
+---
+
+<section
+	class="section-padding credibility-section"
+	id="work"
+>
+	<div class="container">
+		<div class="metrics-grid">
+			<div class="metric">
+				<span
+					class="value"
+					data-number="3.5x"
+					data-animation="countup"
+					data-delay="0"
+					>3.5x</span
+				>
+				<span class="label">ROI Average</span>
+			</div>
+			<div class="metric">
+				<span
+					class="value"
+					data-number="40+"
+					data-animation="countup"
+					data-delay="200"
+					>40+</span
+				>
+				<span class="label">Systems Built</span>
+			</div>
+			<div class="metric">
+				<span
+					class="value"
+					data-number="24/7"
+					data-animation="shuffle"
+					data-delay="400"
+					>24/7</span
+				>
+				<span class="label">Automated Uptime</span>
+			</div>
+		</div>
+
+		<div class="quote-container">
+			<blockquote>
+				"Inculc8 transformed our chaotic manual sales process into a
+				streamlined machine. We doubled our conversion rate in 3
+				months."
+			</blockquote>
+			<cite>- TechStart Innovations</cite>
+		</div>
+	</div>
+</section>
+
+<style>
+	.credibility-section {
+		padding: var(--section-spacing) 0;
+		background: linear-gradient(
+			180deg,
+			var(--bg-card) 0%,
+			var(--bg-dark) 100%
+		);
+		text-align: center;
+	}
+
+	.metrics-grid {
+		display: flex;
+		justify-content: center;
+		gap: 4rem;
+		flex-wrap: wrap;
+		margin-bottom: 5rem;
+	}
+
+	.metric {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+
+	.value {
+		font-size: 4rem;
+		font-weight: 700;
+		color: #ffffff;
+		line-height: 1;
+		margin-bottom: 0.5rem;
+		background: linear-gradient(
+			135deg,
+			var(--accent-cyan) 0%,
+			var(--accent-violet) 100%
+		);
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
+	}
+
+	.label {
+		color: var(--text-muted);
+		text-transform: uppercase;
+		font-size: 0.8rem;
+		letter-spacing: 0.1em;
+	}
+
+	.quote-container {
+		max-width: 800px;
+		margin: 0 auto;
+		padding: 3rem;
+		background: rgba(255, 255, 255, 0.02);
+		border-radius: 20px;
+		border: 1px solid var(--glass-border);
+	}
+
+	blockquote {
+		font-size: 1.5rem;
+		font-style: italic;
+		color: var(--text-secondary);
+		margin-bottom: 1.5rem;
+		line-height: 1.4;
+	}
+
+	cite {
+		color: #00f0ff;
+		font-style: normal;
+		font-weight: 600;
+		letter-spacing: 0.05em;
+	}
+</style>

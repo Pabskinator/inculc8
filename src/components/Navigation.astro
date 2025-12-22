@@ -1,0 +1,140 @@
+---
+const links = [
+	{ name: "Services", href: "/#services" },
+	{ name: "Process", href: "/#process" },
+	{ name: "Work", href: "/#work" },
+	{ name: "Blog", href: "/blog" },
+];
+---
+
+<nav class="nav-container">
+	<div class="logo">
+		<span class="symbol">I8</span>
+		<span class="text">INCULC8</span>
+	</div>
+
+	<div class="nav-links">
+		{
+			links.map((link) => (
+				<a
+					href={link.href}
+					class="nav-link"
+				>
+					{link.name}
+				</a>
+			))
+		}
+	</div>
+
+	<div class="nav-actions">
+		<!-- <a href="#login" class="btn btn-text">Login</a> -->
+		<a
+			href="/#contact-form"
+			class="btn btn-primary"
+			>Contact Us</a
+		>
+	</div>
+</nav>
+
+<style>
+	.nav-container {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		padding: 1.5rem 0;
+		width: 100%;
+		max-width: var(--spacing-container);
+		margin: 0 auto;
+		position: absolute;
+		top: 0;
+		left: 50%;
+		transform: translateX(-50%);
+		z-index: 100;
+	}
+
+	.logo {
+		display: flex;
+		align-items: center;
+		gap: 0.8rem;
+	}
+
+	.symbol {
+		font-family: inherit;
+		font-weight: 800;
+		font-size: 1.5rem;
+		color: var(--accent-cyan);
+		border: 2px solid var(--accent-cyan);
+		padding: 0.1rem 0.6rem;
+		border-radius: 8px;
+		box-shadow: 0 0 15px var(--accent-cyan-glow);
+		letter-spacing: -0.05em;
+	}
+
+	.text {
+		font-size: 1.1rem;
+		font-weight: 700;
+		letter-spacing: 0.2em;
+		color: var(--text-primary);
+	}
+
+	.nav-links {
+		display: flex;
+		gap: 3rem;
+	}
+
+	.nav-link {
+		font-size: 0.85rem;
+		color: var(--text-muted);
+		font-weight: 600;
+		text-transform: uppercase;
+		letter-spacing: 0.1em;
+		transition: all 0.3s ease;
+		position: relative;
+	}
+
+	.nav-link:hover {
+		color: var(--accent-cyan);
+	}
+
+	.nav-link::after {
+		content: "";
+		position: absolute;
+		bottom: -6px;
+		left: 0;
+		width: 0;
+		height: 1px;
+		background: var(--gradient-tech);
+		transition: width 0.3s ease;
+	}
+
+	.nav-link:hover::after {
+		width: 100%;
+	}
+
+	.btn {
+		padding: 0.7rem 1.8rem;
+		border-radius: 6px;
+		font-size: 0.8rem;
+		font-weight: 700;
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+		transition: all 0.3s ease;
+	}
+
+	.btn-primary {
+		background: var(--accent-cyan);
+		color: var(--bg-dark);
+		border: none;
+	}
+
+	.btn-primary:hover {
+		transform: translateY(-2px);
+		box-shadow: 0 5px 15px var(--accent-cyan-glow);
+	}
+
+	@media (max-width: 768px) {
+		.nav-links {
+			display: none;
+		}
+	}
+</style>
