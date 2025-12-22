@@ -25,6 +25,25 @@
     --section-spacing: 8rem;
 }
 
+/* Light Mode Overrides */
+:root.light-mode {
+    --bg-dark: #DEE4EA;
+    /* Darker, cooler gray to reduce glare */
+    --bg-card: #F5F7FA;
+    --bg-accent: #CBD5E0;
+
+    --text-primary: #1A202C;
+    --text-secondary: #4A5568;
+    --text-muted: #718096;
+
+    --glass-bg: rgba(255, 255, 255, 0.8);
+    --glass-border: rgba(0, 0, 0, 0.1);
+
+    /* Adjust accent glows for light bg visibility */
+    --accent-cyan-glow: rgba(0, 240, 255, 0.25);
+    --accent-violet-glow: rgba(191, 148, 255, 0.25);
+}
+
 *,
 *::before,
 *::after {

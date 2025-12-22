@@ -59,11 +59,44 @@
 		container.appendChild(renderer.domElement);
 
 		// --- COLORS ---
-		const colors = {
+		// --- COLORS ---
+		let colors = {
 			cyan: 0x00f0ff,
 			violet: 0xbf94ff,
 			dark: 0x040712,
 		};
+
+		// Theme Handling
+		const updateThemeColors = (theme: string) => {
+			if (theme === "light") {
+				colors.dark = 0xdee4ea; // Light Bg (Matches new CSS)
+				colors.cyan = 0x00a3cc; // Darker Cyan for visibility
+				colors.violet = 0x7f40ff; // Darker Violet
+
+				// Update Fog
+				scene.fog = new THREE.FogExp2(colors.dark, 0.04);
+
+				// Update Bg Plane Opacity (lighter)
+				bgPlane.material.opacity = 0.3;
+			} else {
+				colors.dark = 0x040712; // Dark Bg
+				colors.cyan = 0x00f0ff;
+				colors.violet = 0xbf94ff;
+
+				scene.fog = new THREE.FogExp2(colors.dark, 0.04);
+				bgPlane.material.opacity = 0.6;
+			}
+		};
+
+		// Initialize based on current state
+		if (document.documentElement.classList.contains("light-mode")) {
+			updateThemeColors("light");
+		}
+
+		// Listen for changes
+		window.addEventListener("theme-change", (e: any) => {
+			updateThemeColors(e.detail.theme);
+		});
 
 		// --- 3D PROCESS FLOW SYSTEM ---
 		const flowGroup = new THREE.Group();
@@ -395,7 +428,7 @@
 
 			// Pulse network lines subtly
 			networkLines.forEach((line, idx) => {
-				line.material.opacity =
+				(line.material as THREE.LineBasicMaterial).opacity =
 					0.05 + Math.sin(Date.now() * 0.001 + idx) * 0.03;
 			});
 
