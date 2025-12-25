@@ -21,14 +21,23 @@
 		bgCanvas.height = 512;
 		const bgCtx = bgCanvas.getContext("2d");
 
-		// Create radial gradient (Midnight -> Cyan/Violet)
-		const gradient = bgCtx.createRadialGradient(256, 256, 0, 256, 256, 256);
-		gradient.addColorStop(0, "rgba(0, 240, 255, 0.08)"); // Cyan center
-		gradient.addColorStop(0.5, "rgba(191, 148, 255, 0.05)"); // Violet mid
-		gradient.addColorStop(1, "rgba(4, 7, 18, 0)"); // Midnight edge
+		if (bgCtx) {
+			// Create radial gradient (Midnight -> Cyan/Violet)
+			const gradient = bgCtx.createRadialGradient(
+				256,
+				256,
+				0,
+				256,
+				256,
+				256,
+			);
+			gradient.addColorStop(0, "rgba(0, 240, 255, 0.08)"); // Cyan center
+			gradient.addColorStop(0.5, "rgba(191, 148, 255, 0.05)"); // Violet mid
+			gradient.addColorStop(1, "rgba(4, 7, 18, 0)"); // Midnight edge
 
-		bgCtx.fillStyle = gradient;
-		bgCtx.fillRect(0, 0, 512, 512);
+			bgCtx.fillStyle = gradient;
+			bgCtx.fillRect(0, 0, 512, 512);
+		}
 
 		const bgTexture = new THREE.CanvasTexture(bgCanvas);
 		const bgPlane = new THREE.Mesh(
@@ -59,11 +68,44 @@
 		container.appendChild(renderer.domElement);
 
 		// --- COLORS ---
-		const colors = {
+		// --- COLORS ---
+		let colors = {
 			cyan: 0x00f0ff,
 			violet: 0xbf94ff,
 			dark: 0x040712,
 		};
+
+		// Theme Handling
+		const updateThemeColors = (theme: string) => {
+			if (theme === "light") {
+				colors.dark = 0xf8f9fa; // Very light gray/white-ish
+				colors.cyan = 0x007794; // Deep Cyan
+				colors.violet = 0x6a11cb; // Deep Violet
+
+				// Update Fog
+				scene.fog = new THREE.FogExp2(colors.dark, 0.05);
+
+				// Update Bg Plane Opacity (lighter)
+				bgPlane.material.opacity = 0.2;
+			} else {
+				colors.dark = 0x040712; // Dark Bg
+				colors.cyan = 0x00f0ff;
+				colors.violet = 0xbf94ff;
+
+				scene.fog = new THREE.FogExp2(colors.dark, 0.04);
+				bgPlane.material.opacity = 0.6;
+			}
+		};
+
+		// Initialize based on current state
+		if (document.documentElement.classList.contains("light-mode")) {
+			updateThemeColors("light");
+		}
+
+		// Listen for changes
+		window.addEventListener("theme-change", (e: any) => {
+			updateThemeColors(e.detail.theme);
+		});
 
 		// --- 3D PROCESS FLOW SYSTEM ---
 		const flowGroup = new THREE.Group();
@@ -395,7 +437,7 @@
 
 			// Pulse network lines subtly
 			networkLines.forEach((line, idx) => {
-				line.material.opacity =
+				(line.material as THREE.LineBasicMaterial).opacity =
 					0.05 + Math.sin(Date.now() * 0.001 + idx) * 0.03;
 			});
 

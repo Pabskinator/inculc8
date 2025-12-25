@@ -1,0 +1,187 @@
+---
+
+---
+
+<div
+	id="particle-container"
+	class="particle-background"
+>
+</div>
+
+<script>
+	import * as THREE from "three";
+	import gsap from "gsap";
+	import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+	gsap.registerPlugin(ScrollTrigger);
+
+	const container = document.getElementById("particle-container");
+
+	// Scene setup
+	const scene = new THREE.Scene();
+	const camera = new THREE.PerspectiveCamera(
+		75,
+		window.innerWidth / window.innerHeight,
+		0.1,
+		1000,
+	);
+	camera.position.z = 50;
+
+	const renderer = new THREE.WebGLRenderer({
+		alpha: true,
+		antialias: true,
+	});
+	renderer.setSize(window.innerWidth, window.innerHeight);
+	renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+	if (container) container.appendChild(renderer.domElement);
+
+	// Particle system - VERY SUBTLE
+	const particleCount = window.innerWidth < 768 ? 50 : 80;
+	const particles = new THREE.BufferGeometry();
+	const positions = new Float32Array(particleCount * 3);
+	const colors = new Float32Array(particleCount * 3);
+	const sizes = new Float32Array(particleCount);
+
+	// Brand colors
+	const darkThemeColors = [
+		new THREE.Color(0x00f0ff), // Cyan
+		new THREE.Color(0xaa00ff), // Purple
+		new THREE.Color(0xff00aa), // Pink
+	];
+
+	// Light mode: Dark Grey / Black particles for contrast against white bg
+	const lightThemeColors = [
+		new THREE.Color(0x333333),
+		new THREE.Color(0x555555),
+		new THREE.Color(0x111111),
+	];
+
+	function getParticleColor(isLightMode: boolean) {
+		const palette = isLightMode ? lightThemeColors : darkThemeColors;
+		return palette[Math.floor(Math.random() * palette.length)];
+	}
+
+	for (let i = 0; i < particleCount; i++) {
+		const i3 = i * 3;
+
+		// Random position
+		positions[i3] = (Math.random() - 0.5) * 150;
+		positions[i3 + 1] = (Math.random() - 0.5) * 150;
+		positions[i3 + 2] = (Math.random() - 0.5) * 100;
+
+		// Initial Color (Check current theme)
+		const isLight =
+			document.documentElement.classList.contains("light-mode");
+		const color = getParticleColor(isLight);
+
+		colors[i3] = color.r;
+		colors[i3 + 1] = color.g;
+		colors[i3 + 2] = color.b;
+
+		sizes[i] = Math.random() * 0.3 + 0.5;
+	}
+
+	particles.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+	particles.setAttribute("color", new THREE.BufferAttribute(colors, 3));
+	particles.setAttribute("size", new THREE.BufferAttribute(sizes, 1));
+
+	// Particle material
+	const particleMaterial = new THREE.PointsMaterial({
+		size: 0.8,
+		sizeAttenuation: true,
+		vertexColors: true,
+		transparent: true,
+		opacity: 0.15,
+		blending: THREE.AdditiveBlending,
+	});
+
+	const particleSystem = new THREE.Points(particles, particleMaterial);
+	scene.add(particleSystem);
+
+	// Theme Update Logic
+	function updateParticlesTheme(isLight: boolean) {
+		const colorsAttribute = particles.getAttribute("color");
+		const count = colorsAttribute.count;
+
+		// Update Material Blending
+		particleMaterial.blending = isLight
+			? THREE.NormalBlending
+			: THREE.AdditiveBlending;
+		particleMaterial.opacity = isLight ? 0.3 : 0.15;
+		particleMaterial.needsUpdate = true;
+
+		for (let i = 0; i < count; i++) {
+			const color = getParticleColor(isLight);
+			colorsAttribute.setXYZ(i, color.r, color.g, color.b);
+		}
+		colorsAttribute.needsUpdate = true;
+	}
+
+	// Listen for custom theme-change event
+	window.addEventListener("theme-change", (e: any) => {
+		updateParticlesTheme(e.detail.theme === "light");
+	});
+
+	// Initial Check
+	if (document.documentElement.classList.contains("light-mode")) {
+		updateParticlesTheme(true);
+	}
+
+	// Mouse interaction
+	const mouse = { x: 0, y: 0 };
+	document.addEventListener("mousemove", (event) => {
+		mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+		mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+	});
+
+	// Scroll-based movement
+	let scrollY = 0;
+	window.addEventListener("scroll", () => {
+		scrollY = window.scrollY;
+	});
+
+	// Animation loop
+	const clock = new THREE.Clock();
+
+	function animate() {
+		requestAnimationFrame(animate);
+		const elapsed = clock.getElapsedTime();
+
+		// Rotate particle system slowly
+		particleSystem.rotation.y = elapsed * 0.05;
+		particleSystem.rotation.x = Math.sin(elapsed * 0.1) * 0.1;
+
+		// Scroll parallax
+		particleSystem.position.y = scrollY * 0.02;
+
+		// Mouse parallax (subtle)
+		particleSystem.rotation.x +=
+			(mouse.y * 0.05 - particleSystem.rotation.x) * 0.05;
+		particleSystem.rotation.y +=
+			(mouse.x * 0.05 - particleSystem.rotation.y) * 0.05;
+
+		renderer.render(scene, camera);
+	}
+
+	animate();
+
+	// Resize handler
+	window.addEventListener("resize", () => {
+		camera.aspect = window.innerWidth / window.innerHeight;
+		camera.updateProjectionMatrix();
+		renderer.setSize(window.innerWidth, window.innerHeight);
+	});
+</script>
+
+<style>
+	.particle-background {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100vw;
+		height: 100vh;
+		z-index: -2;
+		pointer-events: none;
+	}
+</style>

@@ -1,0 +1,324 @@
+---
+
+---
+
+<div
+	id="scrolly-container"
+	class="scrolly-background"
+>
+</div>
+
+<script>
+	// @ts-nocheck
+	import * as THREE from "three";
+	import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+	import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader.js";
+	import gsap from "gsap";
+	import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+	gsap.registerPlugin(ScrollTrigger);
+
+	// --- Interaction State ---
+	const mouse = new THREE.Vector2();
+	const windowHalfX = window.innerWidth / 2;
+	const windowHalfY = window.innerHeight / 2;
+
+	// Mouse move
+	document.addEventListener("mousemove", (event) => {
+		mouse.x = (event.clientX - windowHalfX) / windowHalfX;
+		mouse.y = (event.clientY - windowHalfY) / windowHalfY;
+	});
+
+	// --- Scene Setup ---
+	const container = document.getElementById("scrolly-container");
+	const scene = new THREE.Scene();
+
+	const camera = new THREE.PerspectiveCamera(
+		45,
+		window.innerWidth / window.innerHeight,
+		0.1,
+		1000,
+	);
+	camera.position.set(0, 0, 10);
+
+	const renderer = new THREE.WebGLRenderer({
+		alpha: true,
+		antialias: true,
+		powerPreference: "high-performance",
+	});
+	renderer.setSize(window.innerWidth, window.innerHeight);
+	renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+	renderer.outputColorSpace = THREE.SRGBColorSpace;
+	renderer.toneMapping = THREE.ACESFilmicToneMapping;
+	renderer.toneMappingExposure = 1.0;
+	renderer.shadowMap.enabled = true;
+	renderer.setClearColor(0x000000, 0);
+
+	if (container) container.appendChild(renderer.domElement);
+
+	// --- Environment ---
+	const pmrem = new THREE.PMREMGenerator(renderer);
+	pmrem.compileEquirectangularShader();
+
+	new RGBELoader().setPath("/").load("hdr/neutral.hdr", (texture) => {
+		const envMap = pmrem.fromEquirectangular(texture).texture;
+		scene.environment = envMap;
+		texture.dispose();
+		pmrem.dispose();
+	});
+
+	const ambientLight = new THREE.AmbientLight(0xffffff, 2.0);
+	scene.add(ambientLight);
+
+	const dirLight = new THREE.DirectionalLight(0xffffff, 1.5);
+	dirLight.position.set(5, 10, 5);
+	scene.add(dirLight);
+
+	const fillLight = new THREE.DirectionalLight(0x9090ff, 0.8);
+	fillLight.position.set(-5, 0, 5);
+	scene.add(fillLight);
+
+	// --- Scene Hierarchy ---
+	// 1. Scroll Group: Controlled by GSAP for timeline moves
+	const modelGroup = new THREE.Group();
+	scene.add(modelGroup);
+
+	// 2. Inner Rig: Controlled by Mouse/Idle animation
+	const innerRig = new THREE.Group();
+	modelGroup.add(innerRig);
+
+	// 3. Sphere (GLB): Controlled by AnimationMixer (Baked animations)
+
+	// --- Model Loader ---
+	const loader = new GLTFLoader();
+	let sphere: THREE.Group | null = null;
+	const clock = new THREE.Clock();
+
+	// ANIMATION STATE
+	let mixer: THREE.AnimationMixer | null = null;
+	const animationActions: THREE.AnimationAction[] = [];
+
+	loader.load(
+		"/sphere/sphere-mini.glb",
+		(gltf) => {
+			sphere = gltf.scene;
+			// Add GLB to the Inner Rig
+			innerRig.add(sphere);
+			sphere.scale.set(22, 22, 22);
+
+			console.log("--- Scanning Model for Animation Targets ---");
+
+			// --- GLB ANIMATION SETUP ---
+			if (gltf.animations && gltf.animations.length > 0) {
+				// FIX: Bind mixer to the SCENE ROOT, not the sphere group,
+				// to ensure it can reach all animated nodes.
+				mixer = new THREE.AnimationMixer(gltf.scene);
+
+				gltf.animations.forEach((clip) => {
+					const action = mixer!.clipAction(clip);
+					action.play();
+					animationActions.push(action);
+				});
+
+				// DEBUG: Print actual tracks
+				if (gltf.animations[0]) {
+					console.log(
+						"Animation tracks:",
+						gltf.animations[0].tracks.map((t) => t.name),
+					);
+				}
+			} else {
+				console.warn("No animations found in GLB");
+			}
+
+			// Material Setup (FIX: MODIFY, DO NOT REPLACE)
+			sphere.traverse((child) => {
+				const name = child.name.toLowerCase();
+				if ((child as THREE.Mesh).isMesh) {
+					const mesh = child as THREE.Mesh;
+
+					// Ensure we have a material to modify
+					if (mesh.material) {
+						if (
+							name.includes("core") ||
+							name.includes("orb") ||
+							name.includes("sphere2")
+						) {
+							// Modify existing standard material properties if possible
+							// Or if we must replace, we risk breaking material animations.
+							// Assuming we want to KEEP material animations, we should be careful.
+							// However, if the material is generic MeshStandard, we can tune it.
+
+							// Check if we can just update props
+							mesh.material.color.set("#2fffdc");
+							mesh.material.emissive.set("#2fffdc");
+							mesh.material.emissiveIntensity = 2.0;
+							mesh.material.roughness = 0.3;
+							mesh.material.metalness = 0.1;
+							mesh.material.needsUpdate = true;
+						} else if (
+							name.includes("glass") ||
+							name.includes("sphere1")
+						) {
+							// Glass usually needs PhysicalMaterial. If original isn't, we might have to replace.
+							// But if animation targets "transmission", it must be Physical.
+							// If we replace, we might loose tracks.
+							// Try to upgrade if it's standard, or replace if necessary and hope no anims on glass.
+
+							// For safety, let's REPLACE glass (usually not animated) but MODIFY rings/core
+							mesh.material = new THREE.MeshPhysicalMaterial({
+								transmission: 1,
+								thickness: 0.6,
+								roughness: 0.2,
+								metalness: 0,
+								ior: 1.45,
+								envMapIntensity: 1.0,
+								clearcoat: 0.8,
+								clearcoatRoughness: 0.1,
+								transparent: true,
+							});
+						} else if (
+							name.includes("ring") ||
+							name.includes("anneaux")
+						) {
+							mesh.material.metalness = 0.9;
+							mesh.material.roughness = 0.3;
+							mesh.material.envMapIntensity = 1.2;
+							mesh.material.needsUpdate = true;
+						}
+					}
+				}
+			});
+
+			// Setup scroll on the PARENT (modelGroup)
+			setupScrollChoreography(modelGroup);
+		},
+		undefined,
+		(err) => console.error("Error loading model:", err),
+	);
+
+	function updateTheme(theme) {
+		const isLight = theme === "light";
+		if (ambientLight) ambientLight.intensity = isLight ? 1.5 : 2.0;
+	}
+	window.addEventListener("theme-change", (e: any) =>
+		updateTheme(e.detail.theme),
+	);
+	const initialTheme = document.documentElement.classList.contains(
+		"light-mode",
+	)
+		? "light"
+		: "dark";
+	updateTheme(initialTheme);
+
+	function setupScrollChoreography(group: THREE.Group) {
+		const tl = gsap.timeline({ paused: true });
+		window.addEventListener("robot-sync", ((e: CustomEvent) =>
+			tl.progress(e.detail.progress)) as EventListener);
+
+		// Initial State
+		group.position.set(4, -1, 0);
+		group.rotation.set(0, Math.PI * 0.25, 0);
+
+		tl.to(
+			group.position,
+			{ x: -4, y: 0, z: -2, duration: 1, ease: "power2.inOut" },
+			0,
+		).to(
+			group.rotation,
+			{ y: Math.PI, x: 0.2, duration: 1, ease: "power2.inOut" },
+			0,
+		);
+		tl.to(
+			group.position,
+			{ x: 0, y: -0.5, z: 0, duration: 1, ease: "power2.inOut" },
+			1,
+		).to(
+			group.rotation,
+			{ y: Math.PI * 2, x: 0, duration: 1, ease: "power2.inOut" },
+			1,
+		);
+		tl.to(
+			group.position,
+			{ x: 4, y: 0, z: -2, duration: 1, ease: "power2.inOut" },
+			2,
+		).to(
+			group.rotation,
+			{ y: Math.PI * 3, x: -0.2, duration: 1, ease: "power2.inOut" },
+			2,
+		);
+		tl.to(
+			group.position,
+			{ x: 0, y: 1, z: -3, duration: 1, ease: "power2.inOut" },
+			3,
+		).to(
+			group.rotation,
+			{ y: Math.PI * 3.5, x: 0.1, duration: 1, ease: "power2.inOut" },
+			3,
+		);
+		tl.to(
+			group.position,
+			{ x: 0, y: 4, z: -5, duration: 1, ease: "power2.inOut" },
+			4,
+		).to(
+			group.rotation,
+			{ y: Math.PI * 4, x: -0.2, duration: 1, ease: "power2.inOut" },
+			4,
+		);
+	}
+
+	function animate() {
+		requestAnimationFrame(animate);
+
+		const t = clock.getElapsedTime();
+		const delta = clock.getDelta();
+
+		// 1. UPDATE MIXER (Baked Animations)
+		if (mixer) mixer.update(delta);
+
+		if (sphere) {
+			// 2. IDLE & MOUSE (Motion Rig)
+			// Idle Float
+			innerRig.position.y = Math.sin(t * 0.8) * 0.15;
+
+			// Mouse Look (Lerp for smoothness)
+			const targetRotX = mouse.y * 0.3;
+			const targetRotY = mouse.x * 0.3;
+			innerRig.rotation.x += (targetRotX - innerRig.rotation.x) * 0.05;
+			innerRig.rotation.y += (targetRotY - innerRig.rotation.y) * 0.05;
+
+			// Breathe
+			innerRig.rotation.z = Math.sin(t * 0.4) * 0.05;
+		}
+
+		renderer.render(scene, camera);
+	}
+	animate();
+
+	window.addEventListener("resize", () => {
+		const width = window.innerWidth;
+		const height = window.innerHeight;
+		camera.aspect = width / height;
+		camera.updateProjectionMatrix();
+		renderer.setSize(width, height);
+	});
+</script>
+
+<style>
+	.scrolly-background {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100vw;
+		height: 100vh;
+		z-index: -1;
+		pointer-events: none;
+		overflow: hidden;
+	}
+
+	.scrolly-background canvas {
+		width: 100% !important;
+		height: 100% !important;
+		outline: none;
+	}
+</style>
