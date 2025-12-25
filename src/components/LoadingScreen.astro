@@ -1,58 +1,93 @@
 <div id="loading-screen">
+	<div class="grain-overlay"></div>
 	<div class="loader-content">
-		<div class="tech-icon">
-			<div class="circle outer"></div>
-			<div class="circle middle"></div>
-			<div class="circle inner"></div>
-			<div class="core"></div>
+		<div class="brand-reveal">
+			<span class="brand">INCULC8.</span>
 		</div>
-		<div class="percentage">0%</div>
-		<div class="loading-text">SYSTEM PROCESSING...</div>
+		<div class="progress-wrap">
+			<div class="percentage-container">
+				<span class="percentage">00</span>
+			</div>
+			<div class="progress-bar-wrap">
+				<div class="progress-bar">
+					<div class="progress-fill"></div>
+				</div>
+			</div>
+		</div>
+		<div class="loading-status">
+			<span class="status-text">Synchronizing Systems</span>
+		</div>
 	</div>
 </div>
 
 <script>
 	import { gsap } from "gsap";
 
-	// Check if this is the first page load in this session
 	const hasLoadedBefore = sessionStorage.getItem("hasLoadedBefore");
 	const loadingScreen = document.getElementById("loading-screen");
 
-	if (hasLoadedBefore) {
-		// Not first load - hide immediately
-		if (loadingScreen) {
-			loadingScreen.style.display = "none";
-			document.body.style.overflow = "auto";
-		}
+	if (hasLoadedBefore && loadingScreen) {
+		loadingScreen.style.display = "none";
+		document.body.style.overflow = "auto";
 	} else {
-		// First load - show loading animation
-		sessionStorage.setItem("hasLoadedBefore", "true");
+		// sessionStorage.setItem("hasLoadedBefore", "true"); // Uncomment for production
 
 		window.addEventListener("load", () => {
 			const tl = gsap.timeline();
 			const percentage = document.querySelector(".percentage");
-
-			// Counter Animation object
+			const fill = document.querySelector(".progress-fill");
 			let counter = { val: 0 };
 
-			// Animation
-			tl.to(counter, {
-				val: 100,
-				duration: 2.5,
-				ease: "power2.inOut",
-				onUpdate: () => {
-					if (percentage)
-						percentage.textContent = `${Math.round(counter.val)}%`;
-				},
-			}).to("#loading-screen", {
-				yPercent: -100,
-				duration: 1.2,
-				ease: "power4.inOut",
-				delay: 0.5,
-				onComplete: () => {
-					document.body.style.overflow = "auto";
-				},
-			});
+			// Initial state
+			gsap.set(".brand", { y: 100, opacity: 0 });
+			gsap.set(".loading-status", { opacity: 0 });
+
+			tl.to(".brand", {
+				y: 0,
+				opacity: 1,
+				duration: 1.5,
+				ease: "power4.out",
+				delay: 0.2,
+			})
+				.to(
+					counter,
+					{
+						val: 100,
+						duration: 3,
+						ease: "expo.inOut",
+						onUpdate: () => {
+							if (percentage) {
+								let v = Math.round(counter.val);
+								percentage.textContent =
+									v < 10 ? `0${v}` : `${v}`;
+							}
+							if (fill) {
+								(fill as HTMLElement).style.width =
+									`${counter.val}%`;
+							}
+						},
+					},
+					"-=0.5",
+				)
+				.to(
+					".loading-status",
+					{
+						opacity: 0.5,
+						duration: 1,
+						ease: "power2.out",
+					},
+					"-=2",
+				)
+				.to("#loading-screen", {
+					clipPath: "inset(0 0 100% 0)",
+					duration: 1.5,
+					ease: "expo.inOut",
+					delay: 0.3,
+					onComplete: () => {
+						if (loadingScreen) loadingScreen.style.display = "none";
+						document.body.style.overflow = "auto";
+					},
+				});
 		});
 	}
 </script>
@@ -64,118 +99,121 @@
 		left: 0;
 		width: 100%;
 		height: 100vh;
-		background: #040712;
-		z-index: 9999;
+		background: #000;
+		z-index: 99999;
 		display: flex;
-		flex-direction: column;
 		justify-content: center;
 		align-items: center;
 		overflow: hidden;
 	}
 
+	.grain-overlay {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background-image: url("https://grainy-gradients.vercel.app/noise.svg");
+		opacity: 0.15;
+		pointer-events: none;
+		z-index: 1;
+	}
+
 	.loader-content {
+		position: relative;
+		z-index: 2;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
 		gap: 3rem;
+		text-align: center;
+		width: 100%;
+		max-width: 400px;
 	}
 
-	.tech-icon {
-		position: relative;
-		width: 150px;
-		height: 150px;
+	.brand-reveal {
+		overflow: hidden;
+		padding: 0.5rem 0;
 	}
 
-	.circle {
-		position: absolute;
-		top: 50%;
-		left: 50%;
-		transform: translate(-50%, -50%);
-		border: 2px solid transparent;
-		border-radius: 50%;
+	.brand {
+		display: block;
+		font-family: var(--font-heading);
+		font-size: 1.5rem;
+		font-weight: 700;
+		letter-spacing: 0.4em;
+		color: var(--text-primary);
+		text-transform: uppercase;
 	}
 
-	.outer {
-		width: 150px;
-		height: 150px;
-		border-top-color: var(--accent-cyan);
-		border-bottom-color: var(--accent-cyan);
-		animation: spin 3s linear infinite;
+	.progress-wrap {
+		width: 100%;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 1.5rem;
 	}
 
-	.middle {
-		width: 100px;
-		height: 100px;
-		border-left-color: var(--accent-violet);
-		border-right-color: var(--accent-violet);
-		animation: spin-reverse 2s linear infinite;
-	}
-
-	.inner {
-		width: 50px;
-		height: 50px;
-		border-top-color: var(--accent-cyan);
-		animation: spin 1s linear infinite;
-	}
-
-	.core {
-		position: absolute;
-		top: 50%;
-		left: 50%;
-		transform: translate(-50%, -50%);
-		width: 12px;
-		height: 12px;
-		background: var(--accent-cyan);
-		border-radius: 50%;
-		box-shadow: 0 0 20px var(--accent-cyan);
-		animation: pulse 1.5s ease-in-out infinite;
-	}
-
-	@keyframes spin {
-		from {
-			transform: translate(-50%, -50%) rotate(0deg);
-		}
-		to {
-			transform: translate(-50%, -50%) rotate(360deg);
-		}
-	}
-
-	@keyframes spin-reverse {
-		from {
-			transform: translate(-50%, -50%) rotate(360deg);
-		}
-		to {
-			transform: translate(-50%, -50%) rotate(0deg);
-		}
-	}
-
-	@keyframes pulse {
-		0%,
-		100% {
-			transform: translate(-50%, -50%) scale(1);
-			opacity: 1;
-		}
-		50% {
-			transform: translate(-50%, -50%) scale(1.8);
-			opacity: 0.5;
-		}
+	.percentage-container {
+		height: 5rem;
+		display: flex;
+		align-items: center;
+		justify-content: center;
 	}
 
 	.percentage {
-		font-family: "Outfit", sans-serif;
-		font-size: 4rem;
-		font-weight: 800;
-		color: var(--accent-cyan);
-		text-shadow: 0 0 20px var(--accent-cyan-glow);
-		letter-spacing: -0.05em;
+		font-family: var(--font-heading);
+		font-size: 5rem;
+		font-weight: 300;
+		color: var(--text-primary);
+		font-style: italic;
+		background: var(--gradient-premium);
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
 	}
 
-	.loading-text {
-		color: var(--text-muted);
-		font-family: inherit;
-		letter-spacing: 0.5em;
+	.progress-bar-wrap {
+		width: 60%;
+		padding: 4px;
+		border: 1px solid rgba(255, 255, 255, 0.1);
+	}
+
+	.progress-bar {
+		width: 100%;
+		height: 2px;
+		background: rgba(255, 255, 255, 0.05);
+		position: relative;
+		overflow: hidden;
+	}
+
+	.progress-fill {
+		position: absolute;
+		top: 0;
+		left: 0;
+		height: 100%;
+		width: 0%;
+		background: var(--accent-cyan);
+	}
+
+	.loading-status {
+		margin-top: 1rem;
+	}
+
+	.status-text {
+		color: var(--text-secondary);
+		font-family: var(--font-body);
+		letter-spacing: 0.2em;
 		text-transform: uppercase;
-		font-size: 0.75rem;
-		font-weight: 500;
+		font-size: 0.65rem;
+		font-weight: 400;
+	}
+
+	@media (max-width: 768px) {
+		.percentage {
+			font-size: 3.5rem;
+		}
+		.progress-bar-wrap {
+			width: 80%;
+		}
 	}
 </style>

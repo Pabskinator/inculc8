@@ -1,0 +1,103 @@
+---
+
+---
+
+<div class="gradient-overlays">
+	<div class="gradient hero-gradient"></div>
+	<div class="gradient challenge-gradient"></div>
+	<div class="gradient solutions-gradient"></div>
+	<div class="gradient contact-gradient"></div>
+</div>
+
+<script>
+	import gsap from "gsap";
+	import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+	gsap.registerPlugin(ScrollTrigger);
+
+	// Event-Driven Gradient Transitions
+	const gradients = [
+		".hero-gradient", // Index 0
+		".challenge-gradient", // Index 1
+		".solutions-gradient", // Index 2
+		".solutions-gradient", // Index 3 (Reuse blue for Process)
+		".contact-gradient", // Index 4 (Pink/Purple for Credibility)
+		".contact-gradient", // Index 5 (Contact)
+	];
+
+	// Initialize: Hide all except first
+	gsap.set(gradients, { autoAlpha: 0 });
+	gsap.set(gradients[0], { autoAlpha: 1 });
+
+	window.addEventListener("sectionChange", ((e: CustomEvent) => {
+		const { index } = e.detail;
+
+		// Hide all
+		gsap.to(gradients, { autoAlpha: 0, duration: 1, overwrite: "auto" });
+
+		// Show target
+		if (gradients[index]) {
+			gsap.to(gradients[index], {
+				autoAlpha: 1,
+				duration: 1,
+				overwrite: "auto",
+			});
+		}
+	}) as EventListener);
+</script>
+
+<style>
+	.gradient-overlays {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100vw;
+		height: 100vh;
+		z-index: -1;
+		pointer-events: none;
+	}
+
+	.gradient {
+		position: absolute;
+		width: 100%;
+		height: 100%;
+		opacity: 0;
+		transition: opacity 0.3s ease;
+	}
+
+	.hero-gradient {
+		background: radial-gradient(
+			ellipse at 30% 50%,
+			rgba(170, 0, 255, 0.15) 0%,
+			rgba(0, 240, 255, 0.1) 40%,
+			transparent 70%
+		);
+	}
+
+	.challenge-gradient {
+		background: radial-gradient(
+			ellipse at 50% 50%,
+			rgba(255, 68, 68, 0.12) 0%,
+			rgba(255, 136, 0, 0.08) 40%,
+			transparent 70%
+		);
+	}
+
+	.solutions-gradient {
+		background: radial-gradient(
+			ellipse at 70% 50%,
+			rgba(0, 240, 255, 0.15) 0%,
+			rgba(0, 136, 255, 0.1) 40%,
+			transparent 70%
+		);
+	}
+
+	.contact-gradient {
+		background: radial-gradient(
+			ellipse at 50% 60%,
+			rgba(170, 0, 255, 0.15) 0%,
+			rgba(255, 0, 170, 0.1) 40%,
+			transparent 70%
+		);
+	}
+</style>

@@ -1,0 +1,45 @@
+<script>
+	import gsap from "gsap";
+	import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+	gsap.registerPlugin(ScrollTrigger);
+
+	// WAIT for page to be fully loaded AND loading screen to finish!
+	window.addEventListener("load", () => {
+		// Give loading screen time to complete (runs for ~4 seconds)
+		setTimeout(() => {
+			console.log("🎬 Starting animations AFTER loading screen");
+
+			// Hero - Fade in NOW
+			gsap.from(".hero-content", {
+				opacity: 0,
+				y: 60,
+				duration: 1,
+				ease: "power3.out",
+			});
+
+			// Stagger hero elements
+			gsap.from(
+				".hero-text .badge, .hero-title, .hero-subtitle, .hero-actions",
+				{
+					opacity: 0,
+					y: 40,
+					duration: 0.8,
+					stagger: 0.15,
+					ease: "power2.out",
+					delay: 0.2,
+				},
+			);
+
+			// Process Section - REMOVED (Conflict)
+			// Credibility Section - REMOVED (Conflict)
+			// Contact Section - REMOVED (Conflict)
+			// Solutions Section - REMOVED (Conflict)
+			// Problem Section - REMOVED (Conflict)
+
+			console.log(
+				"✨ ALL animations initialized (Legacy transitions removed)",
+			);
+		}, 4500); // Wait 4.5 seconds for loading screen to complete
+	});
+</script>

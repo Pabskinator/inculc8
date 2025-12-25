@@ -29,6 +29,9 @@ Any static assets, like images, can be placed in the `public/` directory.
 
 All commands are run from the root of the project, from a terminal:
 
+> **Note:** This project requires **Node.js v20.9.0**.
+> Recommended command to start dev server: `nvm use 20.9.0 && npm run dev`
+
 | Command                   | Action                                           |
 | :------------------------ | :----------------------------------------------- |
 | `npm install`             | Installs dependencies                            |

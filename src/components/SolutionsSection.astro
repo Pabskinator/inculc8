@@ -1,70 +1,46 @@
----
-
----
-
 <section
-	class="section-padding solutions-section"
+	class="solutions-section snap-section"
 	id="services"
 >
 	<div class="container">
-		<div class="header-split">
-			<div>
-				<span class="subtext">Our Solutions</span>
-				<h2>Scalable Systems for Growth</h2>
+		<div class="solutions-header">
+			<div class="badge-wrapper">
+				<span class="badge">Our Methodology</span>
 			</div>
-			<p class="description">
-				We bridge the gap between complex technology and business
-				results. From custom funnels to full-scale operational
-				automation.
-			</p>
+
+			<h2 class="section-title centered">
+				Systems that <span class="text-gradient italics">Breathe</span>
+				<br />
+				and Evolve.
+			</h2>
 		</div>
 
-		<div class="cards-grid">
-			<!-- Card 1 -->
-			<div class="card">
-				<div class="card-icon">⚡</div>
-				<h3>Workflow Automation</h3>
+		<div class="solutions-grid">
+			<div class="solution-card">
+				<div class="card-icon">01</div>
+				<h3>Architectural Design</h3>
 				<p>
-					Eliminate repetitive tasks. We connect your apps (CRM,
-					Email, Slack) to create seamless data flows that save time
-					and reduce error.
+					We don't just build; we architect. Custom funnel structures
+					designed to guide users through a seamless, logical journey.
 				</p>
-				<a
-					href="#"
-					class="text-link"
-					>Learn more &rarr;</a
-				>
 			</div>
 
-			<!-- Card 2 -->
-			<div class="card">
-				<div class="card-icon">🎯</div>
-				<h3>Funnel Development</h3>
+			<div class="solution-card">
+				<div class="card-icon">02</div>
+				<h3>Neural Automation</h3>
 				<p>
-					High-converting landing pages and sales funnels designed to
-					turn traffic into paying customers with optimized user
-					journeys.
+					Connecting the dots between your CRM, AI agents, and
+					operations to create a self-sustaining business ecosystem.
 				</p>
-				<a
-					href="#"
-					class="text-link"
-					>View Examples &rarr;</a
-				>
 			</div>
 
-			<!-- Card 3 -->
-			<div class="card">
-				<div class="card-icon">🤖</div>
-				<h3>AI Integration</h3>
+			<div class="solution-card">
+				<div class="card-icon">03</div>
+				<h3>Quantum Growth</h3>
 				<p>
-					Leverage LLMs and AI agents to handle customer support,
-					content generation, and data analysis automatically.
+					Scaling with precision. Our data-driven funnels ensure that
+					every click is a step towards a measurable business outcome.
 				</p>
-				<a
-					href="#"
-					class="text-link"
-					>Explore AI &rarr;</a
-				>
 			</div>
 		</div>
 	</div>
@@ -72,143 +48,122 @@
 
 <style>
 	.solutions-section {
-		padding: var(--section-spacing) 0;
-		background: transparent; /* Allow 3D background to show through */
-	}
-
-	.header-split {
+		min-height: 100vh;
 		display: flex;
-		justify-content: space-between;
-		align-items: flex-end;
-		margin-bottom: 4rem;
-		flex-wrap: wrap;
-		gap: 2rem;
+		align-items: center;
+		padding: 0;
+		position: relative;
+		text-align: center;
 	}
 
-	.subtext {
-		text-transform: uppercase;
-		letter-spacing: 0.2em;
-		font-size: 0.75rem;
-		font-weight: 700;
-		color: var(--accent-cyan);
-		display: block;
-		margin-bottom: 1rem;
+	.solutions-header {
+		margin-bottom: 6rem;
 	}
 
-	.description {
-		max-width: 500px;
-		color: var(--text-muted);
-		font-size: 1.1rem;
+	.italics {
+		font-style: italic;
 	}
 
-	.cards-grid {
+	.solutions-grid {
 		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-		gap: 2.5rem;
+		grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+		gap: 3rem;
 	}
 
-	.card {
-		background: var(--bg-card);
-		padding: 3rem;
-		border-radius: 12px;
-		border: 2px solid var(--glass-border);
-		transition: all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+	.solution-card {
+		background: var(--glass-bg);
+		backdrop-filter: blur(12px);
+		padding: 4rem 3rem;
+		border: 1px solid var(--glass-border);
+		transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+		text-align: left;
 		position: relative;
 		overflow: hidden;
-		backdrop-filter: blur(10px);
 	}
 
-	.card::before {
+	.solution-card::before {
 		content: "";
 		position: absolute;
-		top: 0;
+		bottom: 0;
 		left: 0;
 		width: 100%;
-		height: 100%;
-		background: linear-gradient(
-			135deg,
-			rgba(0, 240, 255, 0.05) 0%,
-			rgba(191, 148, 255, 0.05) 100%
-		);
-		opacity: 0;
-		transition: opacity 0.5s ease;
-		z-index: 0;
+		height: 2px;
+		background: var(--gradient-premium);
+		transform: scaleX(0);
+		transform-origin: right;
+		transition: transform 0.6s ease;
 	}
 
-	.card:hover {
-		transform: translateY(-16px) scale(1.02);
-		border-image: linear-gradient(
-				135deg,
-				var(--accent-cyan),
-				var(--accent-violet)
-			)
-			1;
-		box-shadow:
-			0 30px 60px rgba(0, 240, 255, 0.2),
-			0 15px 35px rgba(191, 148, 255, 0.15),
-			inset 0 0 60px rgba(0, 240, 255, 0.03);
+	.solution-card:hover {
+		background: var(--bg-accent);
+		transform: translateY(-10px);
+		border-color: var(--accent-cyan);
 	}
 
-	.card:hover::before {
-		opacity: 1;
+	.solution-card:hover::before {
+		transform: scaleX(1);
+		transform-origin: left;
 	}
 
 	.card-icon {
-		font-size: 2.5rem;
+		font-family: var(--font-heading);
+		font-size: 0.8rem;
+		letter-spacing: 0.2em;
+		color: var(--accent-cyan);
 		margin-bottom: 2rem;
 		display: block;
-		position: relative;
-		z-index: 2;
-		transition: transform 0.3s ease;
-	}
-
-	.card:hover .card-icon {
-		transform: scale(1.1) rotate(5deg);
+		opacity: 0.6;
 	}
 
 	h3 {
-		margin-bottom: 1.25rem;
-		font-size: 1.6rem;
+		font-size: 1.75rem;
+		margin-bottom: 1.5rem;
 		color: var(--text-primary);
-		font-weight: 700;
-		position: relative;
-		z-index: 2;
-		transition: all 0.3s ease;
+		font-weight: 500;
 	}
 
-	.card:hover h3 {
-		background: var(--gradient-tech);
-		-webkit-background-clip: text;
-		-webkit-text-fill-color: transparent;
-	}
-
-	.card p {
-		color: var(--text-muted);
-		margin-bottom: 2.5rem;
-		line-height: 1.7;
+	.solution-card p {
 		font-size: 1rem;
-		position: relative;
-		z-index: 2;
+		color: var(--text-secondary);
+		line-height: 1.8;
+		font-weight: 300;
 	}
 
-	.text-link {
-		color: var(--accent-cyan);
-		font-weight: 600;
-		display: inline-flex;
-		align-items: center;
-		gap: 0.5rem;
-		font-size: 0.9rem;
-		text-transform: uppercase;
-		letter-spacing: 0.05em;
-		position: relative;
-		z-index: 2;
-		transition: all 0.3s ease;
-	}
-
-	.text-link:hover {
-		gap: 0.8rem;
-		background: var(--gradient-tech);
-		-webkit-background-clip: text;
-		-webkit-text-fill-color: transparent;
+	@media (max-width: 768px) {
+		.solutions-grid {
+			grid-template-columns: 1fr;
+		}
 	}
 </style>
+
+<script>
+	import gsap from "gsap";
+	import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+	gsap.registerPlugin(ScrollTrigger);
+
+	// Event-Driven Animation for Index 2 (Solutions Section)
+	window.addEventListener("sectionChange", ((e: CustomEvent) => {
+		const { index, isActive } = e.detail;
+
+		if (index === 2 && isActive) {
+			// Cards stagger animation
+			gsap.fromTo(
+				".solution-card",
+				{ autoAlpha: 0, y: 40 },
+				{
+					autoAlpha: 1,
+					y: 0,
+					duration: 1.2,
+					stagger: 0.2,
+					ease: "power2.out",
+					overwrite: true,
+					delay: 0.5, // Sync tuning
+				},
+			);
+		} else if (index !== 2 || !isActive) {
+			// Reset immediately when not active
+			gsap.set(".solution-card", { autoAlpha: 0, y: 40 });
+		}
+	}) as EventListener);
+</script>

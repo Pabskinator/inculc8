@@ -1,133 +1,168 @@
----
-const steps = [
-	{
-		num: "01",
-		title: "Audit & Strategy",
-		desc: "We analyze your current workflows and identify bottlenecks. A clear roadmap is designed to maximize ROI.",
-	},
-	{
-		num: "02",
-		title: "Build & Automate",
-		desc: "Our engineers implement custom scripts, no-code integrations, and AI agents tailored to your needs.",
-	},
-	{
-		num: "03",
-		title: "Scale & optimize",
-		desc: "We launch the system and continuously monitor performance, making data-driven adjustments for growth.",
-	},
-];
----
-
 <section
-	class="section-padding process-section"
+	class="process-section snap-section"
 	id="process"
 >
-	<div class="container">
-		<div class="section-header">
-			<span class="subtext">How It Works</span>
-			<h2>Our Methodology</h2>
+	<div class="container process-grid">
+		<div class="process-content">
+			<div class="badge-wrapper">
+				<span class="badge">Our Journey</span>
+			</div>
+
+			<h2 class="section-title">
+				The Path to <span class="text-gradient italics">Clarity.</span>
+			</h2>
+
+			<div class="steps-list">
+				<div class="step-item">
+					<div class="step-num">I</div>
+					<div class="step-body">
+						<h3>Strategic Audit</h3>
+						<p>
+							We deconstruct your current logic to find the
+							fractures in your funnel.
+						</p>
+					</div>
+				</div>
+				<div class="step-item">
+					<div class="step-num">II</div>
+					<div class="step-body">
+						<h3>System Assembly</h3>
+						<p>
+							Engineering the automated nerves that connect your
+							business endpoints.
+						</p>
+					</div>
+				</div>
+				<div class="step-item">
+					<div class="step-num">III</div>
+					<div class="step-body">
+						<h3>Recursive Scale</h3>
+						<p>
+							Continuous refinement of the system for exponential,
+							logic-driven growth.
+						</p>
+					</div>
+				</div>
+			</div>
 		</div>
 
-		<div class="steps-container">
-			{
-				steps.map((step, index) => (
-					<div class="step">
-						<div class="step-line" />
-						<div class="step-marker">{step.num}</div>
-						<div class="step-content">
-							<h3>{step.title}</h3>
-							<p>{step.desc}</p>
-						</div>
-					</div>
-				))
-			}
+		<div class="process-visual">
+			<!-- Space reserved for the 3D model (right side in this act) -->
 		</div>
 	</div>
 </section>
 
 <style>
 	.process-section {
+		min-height: 100vh;
+		display: flex;
+		align-items: center;
 		padding: var(--section-spacing) 0;
-		background: var(--bg-dark);
+		position: relative;
 	}
 
-	.section-header {
-		margin-bottom: 5rem;
-	}
-
-	.subtext {
-		text-transform: uppercase;
-		letter-spacing: 0.2em;
-		font-size: 0.75rem;
-		font-weight: 700;
-		color: var(--accent-cyan);
-		display: block;
-		margin-bottom: 1rem;
-	}
-
-	.steps-container {
+	.process-grid {
 		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+		grid-template-columns: 1.2fr 1fr;
 		gap: 4rem;
-		position: relative;
+		align-items: center;
 	}
 
-	.step {
-		position: relative;
-		padding-top: 3rem;
+	@media (max-width: 992px) {
+		.process-grid {
+			grid-template-columns: 1fr;
+		}
+		.process-visual {
+			display: none;
+		}
 	}
 
-	.step-line {
-		position: absolute;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 1px;
-		background: var(--glass-border);
+	.italics {
+		font-style: italic;
 	}
 
-	.step-line::after {
-		content: "";
-		position: absolute;
-		top: 0;
-		left: 0;
-		width: 0;
-		height: 2px;
-		background: var(--gradient-tech);
-		transition: width 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+	.steps-list {
+		display: flex;
+		flex-direction: column;
+		gap: 3rem;
+		margin-top: 4rem;
 	}
 
-	.step.active .step-line::after,
-	.step:hover .step-line::after {
-		width: 100%;
+	.step-item {
+		display: flex;
+		gap: 2.5rem;
+		transition: all 0.5s ease;
 	}
 
-	.step-marker {
-		font-size: 5rem;
-		font-weight: 800;
-		color: rgba(0, 240, 255, 0.25);
-		margin-bottom: 1.5rem;
-		transition: all 0.4s ease;
-		line-height: 1;
-		letter-spacing: -0.05em;
+	.step-item:hover {
+		transform: translateX(10px);
 	}
 
-	.step.active .step-marker,
-	.step:hover .step-marker {
-		background: var(--gradient-tech);
-		-webkit-background-clip: text;
-		-webkit-text-fill-color: transparent;
-		text-shadow: 0 0 40px var(--accent-cyan-glow);
-		opacity: 0.9;
-		transform: scale(1.05);
-	}
-
-	h3 {
-		margin-bottom: 1rem;
+	.step-num {
+		font-family: var(--font-heading);
 		font-size: 1.5rem;
+		color: var(--accent-cyan);
+		opacity: 0.6;
+		min-width: 40px;
 	}
 
-	p {
-		color: var(--text-muted);
+	.step-body h3 {
+		font-size: 1.5rem;
+		margin-bottom: 0.75rem;
+		color: var(--text-primary);
+		font-weight: 500;
+	}
+
+	.step-body p {
+		font-size: 1rem;
+		color: var(--text-secondary);
+		line-height: 1.7;
+		font-weight: 300;
+		max-width: 450px;
 	}
 </style>
+
+<script>
+	import gsap from "gsap";
+	// Event-Driven Animation for Index 3 (Process)
+	window.addEventListener("sectionChange", ((e: CustomEvent) => {
+		const { index, isActive } = e.detail;
+
+		if (index === 3 && isActive) {
+			// Enter
+			gsap.to(".step-item", {
+				autoAlpha: 1,
+				x: 0,
+				duration: 1.2,
+				stagger: 0.2,
+				ease: "power2.out",
+				overwrite: true,
+				delay: 0.5, // Sync tuning
+			});
+			gsap.to(
+				".process-content > .section-title, .process-content > .badge-wrapper",
+				{
+					autoAlpha: 1,
+					y: 0,
+					duration: 1.2,
+					stagger: 0.15,
+					ease: "power2.out",
+					overwrite: true,
+					delay: 0.5, // Sync tuning
+				},
+			);
+		} else if (index !== 3 || !isActive) {
+			// Exit
+			gsap.to(".step-item", {
+				autoAlpha: 0,
+				x: -30,
+				duration: 0.4,
+				overwrite: true,
+			});
+			gsap.to(
+				".process-content > .section-title, .process-content > .badge-wrapper",
+				{ autoAlpha: 0, y: 30, duration: 0.4, overwrite: true },
+			);
+		}
+	}) as EventListener);
+</script>

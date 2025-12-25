@@ -2,40 +2,51 @@
 
 ---
 
-<header class="hero">
-	<!-- Background is now handled globally in index.astro -->
+<header
+	id="intro"
+	class="hero snap-section"
+>
+	<div class="container hero-container">
+		<div class="hero-content">
+			<div
+				class="badge-wrapper"
+				data-scroll
+				data-scroll-speed="1"
+			>
+				<span class="badge">Innovation Pioneer</span>
+			</div>
 
-	<div class="container hero-content">
-		<div class="hero-text">
-			<div class="badge">Inculc8 Solutions</div>
 			<h1 class="hero-title">
-				AI-Powered <br />
-				<span class="text-gradient">Automation</span> & <br />
-				Funnel Systems
+				<span class="line">Redefining the</span>
+				<span class="line text-gradient">Digital Frontier</span>
+				<span class="line">thru AI & Logic.</span>
 			</h1>
+
 			<p class="hero-subtitle">
-				Business Solutions SaaS. We build high-converting funnel
-				websites, optimizing workflows for B2B & B2C companies.
+				Inculc8 Solutions crafts high-conversion funnel systems and
+				intelligent automation workflows for the modern enterprise.
 			</p>
 
 			<div class="hero-actions">
 				<a
 					href="#consultation"
 					class="btn btn-primary"
-					>Book Consultation</a
 				>
+					<span>Commence Journey</span>
+					<div class="btn-glow"></div>
+				</a>
 				<a
 					href="#explore"
 					class="btn btn-secondary"
-					>Explore Services</a
 				>
+					<span>Our Methodology</span>
+				</a>
 			</div>
 		</div>
 
-		<!-- The visual is handled by the background component visually, 
-             but we can add a placeholder or semantic img here if needed for accessibility 
-             or if the design splits screen. 
-             Based on image 1, it looks like text left, visual right/center. -->
+		<!-- Decorative elements for depth -->
+		<div class="hero-decor decor-1"></div>
+		<div class="hero-decor decor-2"></div>
 	</div>
 </header>
 
@@ -45,116 +56,159 @@
 		min-height: 100vh;
 		display: flex;
 		align-items: center;
-		padding-top: 80px; /* Space for fixed nav */
+		padding: 0; /* Let flex center it */
 		overflow: hidden;
 	}
 
-	.hero-bg {
-		position: absolute;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		z-index: 0;
-		opacity: 0.6; /* Slight dim to ensure text readability */
+	.hero-container {
+		position: relative;
+		z-index: 10;
 	}
 
 	.hero-content {
+		max-width: 800px;
+		width: 100%;
 		position: relative;
-		z-index: 1;
-		display: grid;
-		grid-template-columns: 1fr;
-		/* Ideally 1fr 1fr if visual is on right, but if visual is bg, centered or left align text. 
-           Image shows text on left. */
-		max-width: var(--spacing-container);
-	}
-
-	@media (min-width: 900px) {
-		.hero-content {
-			grid-template-columns: 60% 40%;
-		}
-	}
-
-	.hero-text {
-		padding-right: 2rem;
-	}
-
-	.badge {
-		display: inline-block;
-		padding: 0.5rem 1rem;
-		border: 1px solid rgba(255, 255, 255, 0.1);
-		border-radius: 50px;
-		font-size: 0.85rem;
-		color: var(--text-secondary);
-		margin-bottom: 2rem;
-		backdrop-filter: blur(10px);
 	}
 
 	.hero-title {
-		font-weight: 700;
-		margin-bottom: 1.5rem;
-		line-height: 1.1;
+		margin-bottom: 2.5rem;
+		display: flex;
+		flex-direction: column;
 	}
 
-	.text-gradient {
-		background: var(--gradient-tech);
-		-webkit-background-clip: text;
-		-webkit-text-fill-color: transparent;
-		font-weight: 800;
+	.hero-title .line {
+		display: block;
+		overflow: hidden;
 	}
 
 	.hero-subtitle {
-		font-size: 1.125rem;
-		color: var(--text-muted);
-		max-width: 500px;
-		margin-bottom: 3rem;
-		line-height: 1.7;
+		font-size: 1.25rem;
+		max-width: 600px;
+		margin-bottom: 4rem;
+		color: var(--text-primary-muted);
+		font-weight: 300;
+		line-height: 1.8;
 	}
 
 	.hero-actions {
 		display: flex;
-		gap: 1.5rem;
+		gap: 2rem;
+		align-items: center;
 	}
 
 	.btn {
-		padding: 1rem 2.5rem;
-		border-radius: 8px; /* Sharper, more technical corners */
+		position: relative;
+		padding: 1.25rem 3rem;
+		border-radius: 0;
 		font-weight: 600;
-		transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-		text-align: center;
-		letter-spacing: 0.05em;
+		font-size: 0.9rem;
+		letter-spacing: 0.1em;
 		text-transform: uppercase;
-		font-size: 0.85rem;
+		overflow: hidden;
+		transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
 	}
 
 	.btn-primary {
-		background: var(--accent-cyan);
+		background: var(--text-primary);
 		color: var(--bg-dark);
-		border: none;
+		border: 1px solid var(--text-primary);
 	}
 
 	.btn-primary:hover {
-		transform: translateY(-3px);
-		box-shadow: 0 10px 30px var(--accent-cyan-glow);
-		filter: brightness(1.1);
+		background: transparent;
+		color: var(--text-primary);
 	}
 
 	.btn-secondary {
 		background: transparent;
-		color: var(--accent-violet);
-		border: 1px solid var(--accent-violet);
+		color: var(--text-primary);
+		border: 1px solid rgba(255, 255, 255, 0.2);
 	}
 
 	.btn-secondary:hover {
-		background: var(--accent-violet);
-		color: var(--bg-dark);
-		box-shadow: 0 0 20px var(--accent-violet-glow);
-		transform: translateY(-3px);
+		border-color: var(--text-primary);
+		background: rgba(255, 255, 255, 0.05);
 	}
 
-	@media (max-width: 600px) {
+	/* Decorative Orbs/Glows */
+	.hero-decor {
+		position: absolute;
+		width: 40vw;
+		height: 40vw;
+		border-radius: 50%;
+		filter: blur(120px);
+		z-index: -1;
+		opacity: 0.15;
+		pointer-events: none;
+	}
+
+	.decor-1 {
+		top: -10%;
+		right: -10%;
+		background: var(--accent-cyan);
+	}
+
+	.decor-2 {
+		bottom: -20%;
+		left: -10%;
+		background: var(--accent-violet);
+	}
+
+	@media (max-width: 768px) {
 		.hero-actions {
 			flex-direction: column;
+			align-items: flex-start;
+		}
+
+		.btn {
+			width: 100%;
 		}
 	}
 </style>
+
+<script>
+	import gsap from "gsap";
+
+	// Text Reveal Animation
+	// Event-Driven Animation for Index 0 (Hero)
+	window.addEventListener("sectionChange", ((e: CustomEvent) => {
+		const { index, isActive } = e.detail;
+
+		if (index === 0 && isActive) {
+			// Enter
+			gsap.to(".hero-title .line", {
+				y: 0,
+				opacity: 1,
+				duration: 1.2,
+				stagger: 0.2,
+				ease: "power3.out",
+				delay: 0.2,
+				overwrite: true,
+			});
+			gsap.to(".hero-subtitle, .hero-actions, .badge-wrapper", {
+				y: 0,
+				opacity: 1,
+				duration: 1.2,
+				stagger: 0.1,
+				ease: "power3.out",
+				delay: 0.4,
+				overwrite: true,
+			});
+		} else {
+			// Exit / Reset
+			gsap.to(".hero-title .line", {
+				y: 100,
+				opacity: 0,
+				duration: 0.5,
+				overwrite: true,
+			});
+			gsap.to(".hero-subtitle, .hero-actions, .badge-wrapper", {
+				y: 30,
+				opacity: 0,
+				duration: 0.5,
+				overwrite: true,
+			});
+		}
+	}) as EventListener);
+</script>

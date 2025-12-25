@@ -1,0 +1,124 @@
+---
+
+---
+
+<div
+	id="bg-layer-1"
+	class="bg-layer active"
+>
+</div>
+<div
+	id="bg-layer-2"
+	class="bg-layer"
+>
+</div>
+
+<script>
+	import gsap from "gsap";
+
+	// --- Configuration ---
+	// Deep, subtle GRADIENTS for Dark Mode (Radial Spotlights)
+	const gradientsDark = [
+		"radial-gradient(circle at center, #1b2735 0%, #090a0f 100%)", // 0: Intro (Deep Midnight)
+		"radial-gradient(circle at center, #2e1010 0%, #0a0000 100%)", // 1: Challenge (Deep Ember)
+		"radial-gradient(circle at center, #052b20 0%, #000a08 100%)", // 2: Solutions (Deep Emerald)
+		"radial-gradient(circle at center, #1a0b2e 0%, #05020a 100%)", // 3: Process (Deep Amethyst)
+		"radial-gradient(circle at center, #2e260b 0%, #0a0800 100%)", // 4: Credibility (Deep Gold)
+		"radial-gradient(circle at center, #1b2735 0%, #090a0f 100%)", // 5: Contact
+	];
+
+	// Light, pastel GRADIENTS for Light Mode
+	const gradientsLight = [
+		"radial-gradient(circle at center, #ffffff 0%, #f0f4f8 100%)", // 0: Intro
+		"radial-gradient(circle at center, #fff0f0 0%, #fff5f5 100%)", // 1: Challenge (Red Tint)
+		"radial-gradient(circle at center, #f0fffa 0%, #f5fff8 100%)", // 2: Solutions (Green Tint)
+		"radial-gradient(circle at center, #f8f0ff 0%, #fbf5ff 100%)", // 3: Process (Purple Tint)
+		"radial-gradient(circle at center, #fffdf0 0%, #fffef5 100%)", // 4: Credibility (Yellow Tint)
+		"radial-gradient(circle at center, #ffffff 0%, #f0f4f8 100%)", // 5: Contact
+	];
+
+	let currentTheme = "dark";
+	let currentSectionIndex = 0;
+	let activeLayerIndex = 1; // 1 or 2
+
+	const layer1 = document.getElementById("bg-layer-1");
+	const layer2 = document.getElementById("bg-layer-2");
+
+	// --- Helpers ---
+	function updateBackground() {
+		if (!layer1 || !layer2) return;
+
+		const gradients =
+			currentTheme === "light" ? gradientsLight : gradientsDark;
+		const nextGradient = gradients[currentSectionIndex] || gradients[0];
+
+		// Identify Active and Back layers
+		const activeLayer = activeLayerIndex === 1 ? layer1 : layer2;
+		const backLayer = activeLayerIndex === 1 ? layer2 : layer1;
+
+		// 1. Set the NEW gradient on the BACK layer (which is currently valid but hidden 0 opacity or behind)
+		// Actually, logic is:
+		// Current Visible = activeLayer (opacity 1)
+		// Hidden = backLayer (opacity 0)
+
+		backLayer.style.background = nextGradient;
+
+		// 2. Cross-fade
+		// Fade IN the back layer
+		gsap.to(backLayer, { opacity: 1, duration: 2.0, ease: "power2.inOut" });
+
+		// Fade OUT the current active layer
+		gsap.to(activeLayer, {
+			opacity: 0,
+			duration: 2.0,
+			ease: "power2.inOut",
+		});
+
+		// 3. Swap indices for next time
+		activeLayerIndex = activeLayerIndex === 1 ? 2 : 1;
+	}
+
+	// --- Event Listeners ---
+
+	window.addEventListener("sectionChange", ((e: CustomEvent) => {
+		currentSectionIndex = e.detail.index;
+		updateBackground();
+	}) as EventListener);
+
+	window.addEventListener("theme-change", ((e: CustomEvent) => {
+		currentTheme = e.detail.theme;
+		updateBackground();
+	}) as EventListener);
+
+	// Initial Check
+	if (document.documentElement.classList.contains("light-mode")) {
+		currentTheme = "light";
+	}
+
+	// Set initial state immediately without fade
+	if (layer1 && layer2) {
+		const gradients =
+			currentTheme === "light" ? gradientsLight : gradientsDark;
+		layer1.style.background = gradients[0];
+		layer1.style.opacity = "1";
+		layer2.style.opacity = "0";
+	}
+</script>
+
+<style>
+	.bg-layer {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100vw;
+		height: 100vh;
+		z-index: -2;
+		pointer-events: none;
+		opacity: 0; /* Hidden by default */
+		transition: opacity 0.1s; /* GSAP handles the real transition */
+	}
+
+	.bg-layer.active {
+		opacity: 1;
+	}
+</style>

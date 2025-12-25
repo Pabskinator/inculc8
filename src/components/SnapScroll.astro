@@ -1,0 +1,142 @@
+<script>
+	import gsap from "gsap";
+	import ScrollTrigger from "gsap/ScrollTrigger";
+	import ScrollToPlugin from "gsap/ScrollToPlugin";
+
+	gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
+
+	window.addEventListener("load", () => {
+		setTimeout(() => {
+			const wrapper = document.querySelector("#scroll-content");
+			const sections = gsap.utils.toArray(
+				".snap-section",
+			) as HTMLElement[];
+
+			if (!wrapper || sections.length === 0) {
+				return;
+			}
+
+			const totalSections = sections.length;
+
+			// Use matchMedia for responsive logic
+			ScrollTrigger.matchMedia({
+				// --- DESKTOP: Rigid Snap Scroll ---
+				"(min-width: 992px)": function () {
+					const finalY =
+						-1 * (totalSections - 1) * window.innerHeight;
+
+					// Master Timeline
+					const scrollTL = gsap.timeline({
+						paused: true,
+						defaults: { ease: "none" },
+					});
+
+					scrollTL.to(wrapper, {
+						y: finalY,
+					});
+
+					// Scrub Proxy
+					const dummy = { p: 0 };
+					const snap = gsap.utils.snap(1 / (totalSections - 1));
+					let lastActiveIndex = -1;
+
+					ScrollTrigger.create({
+						trigger: "#main-content",
+						start: "top top",
+						end: "+=" + (totalSections - 1) * 50 + "%",
+						pin: true,
+						onUpdate: (self) => {
+							// 1. Calculate Snapped Target
+							const targetP = snap(self.progress);
+							const rawTargetIdx = targetP * (totalSections - 1);
+							const targetIdx = Math.round(rawTargetIdx);
+
+							// Dispatch Event
+							if (targetIdx !== lastActiveIndex) {
+								lastActiveIndex = targetIdx;
+
+								// Dispatch
+								window.dispatchEvent(
+									new CustomEvent("sectionChange", {
+										detail: {
+											index: targetIdx,
+											isActive: true,
+										},
+									}),
+								);
+
+								// Class Updates
+								sections.forEach((sec, i) => {
+									if (i === targetIdx)
+										sec.classList.add("active");
+									else sec.classList.remove("active");
+								});
+							}
+
+							// 2. Animate to Target
+							gsap.to(dummy, {
+								p: targetP,
+								duration: 1.5,
+								ease: "power2.out",
+								overwrite: true,
+								onUpdate: () => {
+									scrollTL.progress(dummy.p);
+									window.dispatchEvent(
+										new CustomEvent("robot-sync", {
+											detail: { progress: dummy.p },
+										}),
+									);
+								},
+							});
+						},
+					});
+				},
+
+				// --- MOBILE: Natural Scroll ---
+				"(max-width: 991px)": function () {
+					console.log("SnapScroll: Mobile Mode (Natural Scroll)");
+
+					// 1. Trigger section changes based on viewport visibility
+					sections.forEach((section, i) => {
+						ScrollTrigger.create({
+							trigger: section,
+							start: "top center",
+							end: "bottom center",
+							onEnter: () => dispatchSectionChange(i),
+							onEnterBack: () => dispatchSectionChange(i),
+						});
+					});
+
+					// 2. Drive Robot based on total page progress
+					ScrollTrigger.create({
+						trigger: "body",
+						start: "top top",
+						end: "bottom bottom",
+						onUpdate: (self) => {
+							window.dispatchEvent(
+								new CustomEvent("robot-sync", {
+									detail: { progress: self.progress },
+								}),
+							);
+						},
+					});
+
+					function dispatchSectionChange(index: number) {
+						window.dispatchEvent(
+							new CustomEvent("sectionChange", {
+								detail: { index: index, isActive: true },
+							}),
+						);
+						// Add active classes for CSS transitions
+						sections.forEach((sec, i) => {
+							if (i === index) sec.classList.add("active");
+							else sec.classList.remove("active");
+						});
+					}
+				},
+			});
+
+			ScrollTrigger.refresh();
+		}, 200);
+	});
+</script>

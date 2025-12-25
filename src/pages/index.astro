@@ -9,29 +9,130 @@ import CredibilitySection from "../components/CredibilitySection.astro";
 import ContactSection from "../components/ContactSection.astro";
 import Footer from "../components/Footer.astro";
 import LoadingScreen from "../components/LoadingScreen.astro";
-import ThreeBackground from "../components/ThreeBackground.astro";
+import ScrollyRobot from "../components/ScrollyRobot.astro";
 import ScrollAnimations from "../components/ScrollAnimations.astro";
 import NumberAnimations from "../components/NumberAnimations.astro";
 import ScrollToTop from "../components/ScrollToTop.astro";
+import SmoothScrollTransitions from "../components/SmoothScrollTransitions.astro";
+import SnapScroll from "../components/SnapScroll.astro";
+import BackgroundManager from "../components/BackgroundManager.astro";
 ---
 
 <Layout title="Inculc8 Solutions | AI Automation & Funnels">
 	<LoadingScreen slot="loader" />
-	<ThreeBackground />
+	<BackgroundManager />
+	<ScrollyRobot />
 	<Navigation />
 
-	<main>
-		<Hero />
-		<ProblemSection />
-		<SolutionsSection />
-		<ProcessSection />
-		<CredibilitySection />
-		<ContactSection />
-	</main>
+	<main id="main-content">
+		<div id="scroll-content">
+			<Hero />
+			<ProblemSection />
+			<SolutionsSection />
+			<ProcessSection />
+			<CredibilitySection />
 
-	<Footer />
+			<!-- Last "Page" includes Contact + Footer -->
+			<div
+				id="contact"
+				class="snap-section last-page-wrapper"
+			>
+				<ContactSection />
+				<Footer />
+			</div>
+		</div>
+	</main>
 
 	<ScrollAnimations />
 	<NumberAnimations />
 	<ScrollToTop />
+	<SmoothScrollTransitions />
+	<SnapScroll />
 </Layout>
+
+<style>
+	/* Pinned Scroll Layout (Desktop Default) */
+	#main-content {
+		height: 100vh;
+		overflow: hidden; /* Mask the sliding content on desktop */
+		position: relative;
+	}
+
+	#scroll-content {
+		will-change: transform;
+		width: 100%;
+	}
+
+	.snap-section {
+		/* Force visibility: override any GSAP triggers that are failing in pinned mode */
+		opacity: 1 !important;
+		visibility: visible !important;
+
+		/* STRICT 100VH PAGE LAYOUT (Desktop) */
+		min-height: 100vh !important;
+		height: 100vh !important;
+		max-height: 100vh !important;
+
+		/* Center Content Vertically (Desktop) */
+		display: flex !important;
+		flex-direction: column !important;
+		justify-content: center !important;
+		align-items: center !important;
+
+		overflow: hidden !important;
+		padding: 0 !important;
+		margin: 0 !important;
+		position: relative;
+	}
+
+	/* TRANSITION LOGIC: UNIVERSAL VISIBILITY */
+	.snap-section > * {
+		opacity: 0;
+		transform: translateY(40px);
+		transition:
+			opacity 0.4s ease-in,
+			transform 0.4s ease-in;
+		transition-delay: 0s;
+	}
+
+	/* Active State: Show Content */
+	.snap-section.active > * {
+		opacity: 1 !important;
+		transform: translateY(0) !important;
+		transition:
+			opacity 0.8s ease-out,
+			transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+		transition-delay: 0s;
+	}
+
+	.last-page-wrapper {
+		justify-content: flex-end !important;
+	}
+
+	/* --- MOBILE RESPONSIVENESS OVERRIDES --- */
+	@media (max-width: 991px) {
+		#main-content {
+			height: auto !important;
+			overflow: visible !important;
+		}
+
+		/* Reset the transformation on the wrapper */
+		#scroll-content {
+			transform: none !important;
+		}
+
+		.snap-section {
+			height: auto !important;
+			min-height: 100vh !important; /* Allow growing */
+			max-height: none !important;
+			padding: 4rem 1.5rem !important; /* Add padding for content */
+			justify-content: flex-start !important;
+			overflow: visible !important;
+		}
+
+		/* Adjust transition delays or speeds for mobile if needed */
+		.snap-section.active > * {
+			transition-duration: 0.6s;
+		}
+	}
+</style>
